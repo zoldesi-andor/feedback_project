@@ -8,6 +8,10 @@ class QuestionnaireViewModel {
 		this.Questions = questions.map(question => new QuestionViewModel(question, this));
 	}
 	
+	public submit(): void {
+		console.log(this.getResults());
+	}
+	
 	public getResults(): Array<Answer> {
 		return this.Questions.map(qvm => qvm.getResult());
 	}

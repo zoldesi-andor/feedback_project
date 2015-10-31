@@ -25,7 +25,7 @@ class QuestionViewModel {
 	public getResult(): Answer {
 		return {
 			QuestionId: this.model.Id,
-			OptionId: this.SelectedOption.OptionId
+			OptionId: this.SelectedOption ? this.SelectedOption.OptionId : null
 		};
 	}
 }

@@ -10,6 +10,8 @@ block content
 			li(data-bind='css: { active: IsSelected() }')
 				a(data-bind='text: Text, click: select')
 			<!-- /ko -->
+	
+	button.btn.btn-primary(data-bind='click: submit') Submit
 		
 block scripts
 	script(data-main='ts/questionnaire/QuestionnairePage.js', src='lib/requirejs/require.js')

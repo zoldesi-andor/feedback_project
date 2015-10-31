@@ -5,7 +5,7 @@ class QuestionnaireViewModel {
 	public Questions: Array<QuestionViewModel>;
 	
 	constructor(questions: Array<Question>) {
-		this.Questions = questions.map(question => new QuestionViewModel(question));
+		this.Questions = questions.map(question => new QuestionViewModel(question, this));
 	}
 	
 	public getResults(): Array<Answer> {

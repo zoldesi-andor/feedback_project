@@ -3,9 +3,9 @@ requirejs(
 	(QuestionnaireViewModel) => {
 
 		var config = {
-			"Genger": ["", "", ""],
-			"Age": ["", "", ""],
-			"School": ["", "", ""]
+			"Genger": [["Male", "male"], ["Female", "female"]],
+			"Age": [["0-12", "0-12"], ["13-50", "13-50"], ["50+", "50plus"]],
+			"School": [["Elementary", "elementary"], ["High School", "high-school"], ["University", "uni"]]
 		};
 
 		var questionIndex = 0;
@@ -14,10 +14,11 @@ requirejs(
 			var question = <Question>{};
 			question.Id = questionIndex++;
 			question.Text = key;
-			question.Options = prop.map(iconUrl => {
+			question.Options = prop.map(props => {
 				var answer = <Option>{};
 				answer.Id = answerIndex++;
-				answer.CssClass = iconUrl;
+				answer.Text = props[0];
+				answer.CssClass = props[1];
 				return answer;
 			})
 			return question;
@@ -28,4 +29,3 @@ requirejs(
 		ko.applyBindings(questionnaireViewModel);
 	}
 );
-

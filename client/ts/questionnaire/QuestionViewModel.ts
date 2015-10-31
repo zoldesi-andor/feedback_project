@@ -1,33 +1,31 @@
-/// <reference path="Option.d.ts" />
-/// <reference path="Answer.d.ts" />
-
-import AnswerViewModel = require("OptionViewModel");
+import QuestionnaireViewModel = require("QuestionnaireViewModel");
+import OptionViewModel = require("OptionViewModel");
 
 class QuestionViewModel {
 
 	public Text: string;
-	public Answers: Array<AnswerViewModel>;
+	public Options: Array<OptionViewModel>;
 
 	constructor(
-		private model: Question
+		private model: Question,
+		private parent: QuestionnaireViewModel
 	) {
 		this.Text = model.Text;
-		this.Answers = model.Options.map(answer => new AnswerViewModel(answer));
+		this.Options = model.Options.map(answer => new OptionViewModel(answer, this));
 	}
 
-	public get SelectedAnswer(): AnswerViewModel {
-		return this.Answers.filter(answer => answer.IsSelected())[0]
+	public get SelectedOption(): OptionViewModel {
+		return this.Options.filter(answer => answer.IsSelected())[0]
 	}
 
-	public set SelectedAnswer(a: AnswerViewModel) {
-		this.Answers.forEach(answer => answer.IsSelected(answer === a));
+	public set SelectedOption(a: OptionViewModel) {
+		this.Options.forEach(answer => answer.IsSelected(answer === a));
 	}
-
 
 	public getResult(): Answer {
 		return {
 			QuestionId: this.model.Id,
-			OptionId: this.SelectedAnswer.OptionId
+			OptionId: this.SelectedOption.OptionId
 		};
 	}
 }

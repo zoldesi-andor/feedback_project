@@ -1,7 +1,15 @@
 extends layout
 
 block content
-	h1='Here Comes the Questionnaire'
-
+	h1 Here Comes the Questionnaire
+	
+	div(data-bind='foreach: Questions')
+		h4(data-bind='text: Text')
+		ul.nav.nav-pills
+			<!-- ko foreach: Options -->
+			li(data-bind='css: { active: IsSelected() }')
+				a(data-bind='text: Text, click: select')
+			<!-- /ko -->
+		
 block scripts
 	script(data-main='ts/questionnaire/QuestionnairePage.js', src='lib/requirejs/require.js')

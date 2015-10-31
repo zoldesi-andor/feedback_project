@@ -5,7 +5,8 @@
 	// Configure glob patterns for excluding files and folders.
 	"files.exclude": {
 		"node_modules": true,
-		"**/*.js": { "when": "$(basename).ts" },
-		"**/*.map": { "when": "$(basename)" }
+		"bower_components": true,
+		"client/**/*.js": { "when": "$(basename).ts" },
+		"client/**/*.map": { "when": "$(basename)" }
 	}
 }

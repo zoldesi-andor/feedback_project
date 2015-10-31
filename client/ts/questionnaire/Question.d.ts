@@ -1,5 +1,4 @@
-/// <reference path="Option.d.ts" />
-
+/** A question in the questionnaire. */
 interface Question {
 	Id: number,
 	Text: string,

@@ -1,6 +1,7 @@
 import QuestionnaireViewModel = require("QuestionnaireViewModel");
 import OptionViewModel = require("OptionViewModel");
 
+/** View model for a question in a questionnaire. */
 class QuestionViewModel {
 
 	public Text: string;

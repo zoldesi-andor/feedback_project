@@ -1,3 +1,5 @@
+/** The entry point for the questionnaire page */
+
 requirejs(
 	['QuestionnaireViewModel'],
 	(QuestionnaireViewModel) => {

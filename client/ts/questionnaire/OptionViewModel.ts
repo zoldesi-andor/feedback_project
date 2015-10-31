@@ -1,5 +1,6 @@
 import QuestionViewModel = require("QuestionViewModel");
 
+/** View model for a possible answer to a question in the questionnaire. */
 class OptionViewModel {
 	
 	public IsSelected: KnockoutObservable<boolean>;

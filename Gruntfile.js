@@ -4,7 +4,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
-	grunt.loadNpmTasks('grunt-typescript');
+	grunt.loadNpmTasks('grunt-ts');
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -16,14 +16,12 @@ module.exports = function (grunt) {
 				}
 			}
 		},
-		typescript: {
+		ts: {
 			dev: {
 				src: [
-					'typings/knockout/knockout.d.ts', 
-					'typings/jquery/jquery.d.ts',  
-					'typings/requirejs/require.d.ts', 
+					'typings/**/*.d.ts',
+					//'!typings/requirejs/require.d.ts', 
 					'client/ts/**/*.ts'],
-				dest: '.',
 				options: {
 					module: 'amd',
 					target: 'es5',
@@ -44,5 +42,5 @@ module.exports = function (grunt) {
 	});
 
 	// Default task(s).
-	grunt.registerTask('default', ['clean', 'bower', 'typescript']);
+	grunt.registerTask('default', ['clean', 'bower', 'ts']);
 };

@@ -1,17 +1,21 @@
-extends layout
+extends text-content
 
-block content
-	h1 Please answer the following questions!
-	
-	div(data-bind='foreach: Questions')
-		h4(data-bind='text: Text')
-		ul.nav.nav-pills
-			<!-- ko foreach: Options -->
-			li(data-bind='css: { active: IsSelected() }')
-				a(data-bind='text: Text, css: CssClass, click: select')
-			<!-- /ko -->
-	
-	button.btn.btn-primary(data-bind='click: submit') Submit
-		
+block main-text
+    h1 Please answer the following questions!
+
+    div(data-bind='foreach: Questions')
+        h4(data-bind='text: Text')
+        .dropdown
+            button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                span(data-bind="html: (SelectedOption || { Text: 'Please Select...'}).Text")
+                span.carret
+            ul.dropdown-menu
+                <!-- ko foreach: Options -->
+                li(data-bind='css: { active: IsSelected() }')
+                    a(data-bind='html: Text, css: CssClass, click: select')
+                <!-- /ko -->
+    
+    button.btn.btn-primary.space-above(data-bind='click: submit') Submit
+
 block scripts
-	script(data-main='ts/questionnaire/QuestionnairePage.js', src='lib/requirejs/require.js')
+    script(data-main='ts/questionnaire/QuestionnairePage.js', src='lib/requirejs/require.js')

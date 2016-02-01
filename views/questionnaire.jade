@@ -8,7 +8,7 @@ block content
 		ul.nav.nav-pills
 			<!-- ko foreach: Options -->
 			li(data-bind='css: { active: IsSelected() }')
-				a(data-bind='text: Text, click: select')
+				a(data-bind='text: Text, css: CssClass, click: select')
 			<!-- /ko -->
 	
 	button.btn.btn-primary(data-bind='click: submit') Submit

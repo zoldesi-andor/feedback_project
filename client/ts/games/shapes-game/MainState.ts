@@ -32,7 +32,7 @@ class GameState extends Phaser.State {
     }
     
     public update(): void {
-        this.physics.arcade.collide(this.shapes);
+        this.physics.arcade.collide(this.shapes, undefined);
     }
 
     private createShape(type: ShapeType, x: number, y: number): Phaser.Sprite {

@@ -21,7 +21,8 @@
   "dependencies": {
     "bootstrap": "~3.3.5",
     "requirejs": "~2.1.20",
-    "knockout": "knockoutjs#~3.3.0"
+    "knockout": "knockoutjs#~3.3.0",
+    "phaser": "~2.4.4"
   },
   "exportsOverride": {
     "bootstrap": {

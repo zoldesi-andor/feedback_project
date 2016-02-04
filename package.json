@@ -17,8 +17,7 @@
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-copy": "^0.8.2",
     "grunt-contrib-requirejs": "^0.4.4",
-    "grunt-ts": "^5.1.0",
-    "grunt-typescript": "^0.7.0",
+    "grunt-ts": "latest",
     "jade": "~1.11.0",
     "morgan": "~1.6.1",
     "serve-favicon": "~2.3.0"

@@ -20,7 +20,7 @@
 },
 {
 	"filename": "hexagon.png",
-	"frame": {"x":409,"y":1,"w":90,"h":100},
+	"frame": {"x":410,"y":1,"w":100,"h":90},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":5,"y":0,"w":90,"h":100},
@@ -29,10 +29,10 @@
 },
 {
 	"filename": "kite.png",
-	"frame": {"x":307,"y":167,"w":62,"h":100},
+	"frame": {"x":307,"y":167,"w":100,"h":62},
 	"rotated": true,
 	"trimmed": true,
-	"spriteSourceSize": {"x":19,"y":0,"w":62,"h":100},
+	"spriteSourceSize": {"x":19,"y":0,"w":100,"h":62},
 	"sourceSize": {"w":100,"h":100},
 	"pivot": {"x":0.5,"y":0.5}
 },

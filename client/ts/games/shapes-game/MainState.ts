@@ -7,19 +7,21 @@ class GameState extends Phaser.State implements Model.IGameModel {
 
     private shapesGroup: Phaser.Group;
     private targetShapeType: ShapeType;
-    
     private warpInArea: WarpInArea;
 
+    /** Phazer init life cycle callback */
     public init(): void {
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         this.scale.pageAlignHorizontally = true;
         this.scale.pageAlignVertically = true;
     }
 
+    /** Phazer preload life cycle callback */
     public preload(): void {
         Shape.loadResources(this.game);
     }
 
+    /** Phazer create life cycle callback */
     public create(): void {
         this.physics.startSystem(Phaser.Physics.ARCADE);
         this.stage.backgroundColor = "#FFFFFF";
@@ -28,7 +30,8 @@ class GameState extends Phaser.State implements Model.IGameModel {
         
         this.warpInArea = new WarpInArea(this, this.game);
     }
-
+    
+    /** Phazer update callback */
     public update(): void {
         this.physics.arcade.collide(this.shapesGroup, undefined);
     }
@@ -39,6 +42,11 @@ class GameState extends Phaser.State implements Model.IGameModel {
      */
     public addShape(s: Shape): void {
         this.shapesGroup.add(s);
+        s.inputEnabled = true;
+        s.events.onInputDown.add(() => {
+            s.kill();
+            this.shapesGroup.remove(s);
+        });
     }
         
     /** Gets all the shapes on the game field */

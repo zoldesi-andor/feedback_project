@@ -2,7 +2,7 @@
 requirejs(
     ["MainState"],
 	(MainState: any) => {
-        var game = new Phaser.Game(800, 400, Phaser.AUTO);        
+        var game = new Phaser.Game(800, 800, Phaser.AUTO);        
         game.state.add("GameState", new MainState(), true);
 	}
 );

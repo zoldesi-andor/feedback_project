@@ -1,6 +1,7 @@
 import ShapeType = require("ShapeType");
 import Shape = require("Shape");
 import WarpInArea = require("WarpInArea");
+import MenuBar = require("MenuBar");
 import Model = require("Model");
 
 class GameState extends Phaser.State implements Model.IGameModel {
@@ -8,6 +9,7 @@ class GameState extends Phaser.State implements Model.IGameModel {
     private shapesGroup: Phaser.Group;
     private targetShapeType: ShapeType;
     private warpInArea: WarpInArea;
+    private MenuBar; 
 
     /** Phazer init life cycle callback */
     public init(): void {
@@ -25,9 +27,9 @@ class GameState extends Phaser.State implements Model.IGameModel {
     public create(): void {
         this.physics.startSystem(Phaser.Physics.ARCADE);
         this.stage.backgroundColor = "#FFFFFF";
-
         this.shapesGroup = this.add.physicsGroup(Phaser.Physics.ARCADE);
         
+        this.MenuBar = new MenuBar(this, this.game);        
         this.warpInArea = new WarpInArea(this, this.game);
     }
     

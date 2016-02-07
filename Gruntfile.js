@@ -20,8 +20,8 @@ module.exports = function (grunt) {
 			dev: {
 				src: [
 					'typings/**/*.d.ts',
-					//'!typings/requirejs/require.d.ts', 
-					'client/ts/**/*.ts'],
+					'client/ts/**/*.ts',
+                    'client/ts/**/*.d.ts'],
 				options: {
 					module: 'amd',
 					target: 'es5',

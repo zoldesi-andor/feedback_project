@@ -1,9 +1,14 @@
 import ShapeType = require("ShapeType");
 import Shape = require("Shape");
+import WarpInArea = require("WarpInArea");
+import Model = require("Model");
 
-class GameState extends Phaser.State {
+class GameState extends Phaser.State implements Model.IGameModel {
 
-    private shapes: Phaser.Group;
+    private shapesGroup: Phaser.Group;
+    private targetShapeType: ShapeType;
+    
+    private warpInArea: WarpInArea;
 
     public init(): void {
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -19,32 +24,39 @@ class GameState extends Phaser.State {
         this.physics.startSystem(Phaser.Physics.ARCADE);
         this.stage.backgroundColor = "#FFFFFF";
 
-        this.shapes = this.add.physicsGroup(Phaser.Physics.ARCADE);
+        this.shapesGroup = this.add.physicsGroup(Phaser.Physics.ARCADE);
+        
+        this.warpInArea = new WarpInArea(this, this.game);
+    }
 
-        this.shapes.add(this.createShape(ShapeType.kite, 20, 20));
-
-        for (var i = 0; i < 13; i++) {
-            var x = this.rnd.integerInRange(0, 700);
-            var y = this.rnd.integerInRange(0, 300);
-            var type = <ShapeType> i; //this.rnd.integerInRange(0, Object.keys(ShapeType).length / 2);
-            this.shapes.add(this.createShape(type, x, y));
-        }
+    public update(): void {
+        this.physics.arcade.collide(this.shapesGroup, undefined);
     }
     
-    public update(): void {
-        this.physics.arcade.collide(this.shapes, undefined);
+    /** 
+     * Adds a new shape to the game field 
+     * @param {Shape} s - The shape to add to the game field.
+     */
+    public addShape(s: Shape): void {
+        this.shapesGroup.add(s);
     }
-
-    private createShape(type: ShapeType, x: number, y: number): Phaser.Sprite {
-        var shape = new Shape(type, this.game, x, y)
         
-        shape.scale.setTo(0.5, 0.5);
+    /** Gets all the shapes on the game field */
+    public getShapes(): Array<Shape> {
+        return <Array<Shape>> this.shapesGroup.children;
+    }
         
-        shape.getBody().velocity.setTo(
-            this.rnd.integerInRange(-100, 100),
-            this.rnd.integerInRange(-100, 100));
-
-        return shape;
+    /** Gets the target shape type (the kind of shape the user has to find) */
+    public getTargetShapeType(): ShapeType {
+        return this.targetShapeType;
+    }
+        
+    /** 
+     * Sets the target shape type (the kind of shape the user has to find) 
+     * @param {ShapeType} t - The new target shape type.
+     */
+    public setTargetShapeType(t: ShapeType): void {
+        this.targetShapeType = t;
     }
 }
 

@@ -14,8 +14,9 @@ class Shape extends Phaser.Sprite {
         var body = this.getBody();
         body.bounce.set(1);
         body.collideWorldBounds = true;
-        body.drag.setTo(10, 10);
+        body.drag.setTo(30, 30);
         
+        this.anchor.set(0.5, 0.5);
         this.tint = Shape.Colors[game.rnd.integerInRange(0, Shape.Colors.length - 1)];
     }
     

@@ -30,7 +30,7 @@ class GameState extends Phaser.State implements Model.IGameModel {
         this.physics.startSystem(Phaser.Physics.ARCADE);
         this.stage.backgroundColor = "#FFFFFF";
         this.shapesGroup = this.add.physicsGroup(Phaser.Physics.ARCADE);
-        this.targetShapeType = <ShapeType>this.rnd.integerInRange(0, Object.keys(ShapeType).length / 2);
+        this.targetShapeType = <ShapeType>this.rnd.integerInRange(0, Object.keys(ShapeType).length / 2 - 1);
 
         this.menuBar = new MenuBar(this, this.game);
         this.warpInArea = new WarpInArea(this, this.game);

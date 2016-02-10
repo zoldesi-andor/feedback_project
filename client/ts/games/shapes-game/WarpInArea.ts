@@ -25,7 +25,7 @@ class WarpInArea {
             for (var i = 0; i < min(missing, 3); i++) {
                 this.gameModel.addShape(
                     this.createShape(
-                        <ShapeType>this.game.rnd.integerInRange(0, Object.keys(ShapeType).length / 2),
+                        <ShapeType>this.game.rnd.integerInRange(0, Object.keys(ShapeType).length / 2 - 1),
                         this.game.rnd.integerInRange(100, 700),
                         150
                     ));

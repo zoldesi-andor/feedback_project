@@ -16,6 +16,7 @@ class Shape extends Phaser.Sprite {
         body.collideWorldBounds = true;
         body.drag.setTo(30, 30);
         
+        this.scale.setTo(0.5, 0.5);
         this.anchor.set(0.5, 0.5);
         this.tint = Shape.Colors[game.rnd.integerInRange(0, Shape.Colors.length - 1)];
     }

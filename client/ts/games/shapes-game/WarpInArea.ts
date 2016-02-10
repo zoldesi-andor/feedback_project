@@ -10,7 +10,7 @@ class WarpInArea {
     private gameModel: Model.IGameModel;
     private game: Phaser.Game;
 
-    private shapeCount = 30;
+    public maxShapeCount = 30;
 
     constructor(gameModel: Model.IGameModel, game: Phaser.Game) {
         this.gameModel = gameModel;
@@ -20,14 +20,14 @@ class WarpInArea {
     }
 
     public TimerCallback(): void {
-        var missing = this.shapeCount - this.gameModel.getShapes().length;
+        var missing = this.maxShapeCount - this.gameModel.getShapes().length;
         if (missing > 0) {
             for (var i = 0; i < min(missing, 3); i++) {
                 this.gameModel.addShape(
                     this.createShape(
                         <ShapeType>this.game.rnd.integerInRange(0, Object.keys(ShapeType).length / 2),
                         this.game.rnd.integerInRange(100, 700),
-                        0
+                        150
                     ));
             }
         }
@@ -35,10 +35,9 @@ class WarpInArea {
 
     private createShape(type: ShapeType, x: number, y: number): Shape {
         var shape = new Shape(type, this.game, x, y)
-        shape.scale.setTo(0.5, 0.5);
 
-        var angle = this.game.rnd.integerInRange(-120, -60);
-        var speed = this.game.rnd.integerInRange(100, 200);
+        var angle = this.game.rnd.integerInRange(120, 60);
+        var speed = this.game.rnd.integerInRange(200, 300);
 
         var body = shape.getBody();
 

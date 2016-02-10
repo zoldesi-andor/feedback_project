@@ -3,7 +3,10 @@ import ShapeType = require("ShapeType");
 
 declare module Model {
     /** Interface for the game model. */
-    export interface IGameModel {    
+    export interface IGameModel {
+        /** Adds a listener which is called on model changes. */
+        addChangeListener(func: () => void): void;    
+        
         /** 
          * Adds a new shape to the game field 
          * @param {Shape} s - The shape to add to the game field.
@@ -21,6 +24,9 @@ declare module Model {
          * @param {ShapeType} t - The new target shape type.
          */
         setTargetShapeType(t: ShapeType): void;
+        
+        /** Gets the number of shapes on the game field matching the target shape type */
+        getTargetCount(): number;
     }
 }
 

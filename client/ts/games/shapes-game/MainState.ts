@@ -9,7 +9,9 @@ class GameState extends Phaser.State implements Model.IGameModel {
     private shapesGroup: Phaser.Group;
     private targetShapeType: ShapeType;
     private warpInArea: WarpInArea;
-    private MenuBar; 
+    private menuBar: MenuBar;
+
+    private changeListeners: Array<() => void> = [];
 
     /** Phazer init life cycle callback */
     public init(): void {
@@ -28,14 +30,25 @@ class GameState extends Phaser.State implements Model.IGameModel {
         this.physics.startSystem(Phaser.Physics.ARCADE);
         this.stage.backgroundColor = "#FFFFFF";
         this.shapesGroup = this.add.physicsGroup(Phaser.Physics.ARCADE);
-        
-        this.MenuBar = new MenuBar(this, this.game);        
+        this.targetShapeType = <ShapeType>this.rnd.integerInRange(0, Object.keys(ShapeType).length / 2);
+
+        this.menuBar = new MenuBar(this, this.game);
         this.warpInArea = new WarpInArea(this, this.game);
     }
     
     /** Phazer update callback */
     public update(): void {
         this.physics.arcade.collide(this.shapesGroup, undefined);
+        this.physics.arcade.collide(this.shapesGroup, this.menuBar.getSprite());
+
+        if (this.getShapes().length === this.warpInArea.maxShapeCount && this.getTargetCount() === 0) {
+            this.setRandomTarget();
+        }
+    }
+    
+    /** Adds a listener which is called on model changes. */
+    public addChangeListener(func: () => void): void {
+        this.changeListeners.push(func);
     }
     
     /** 
@@ -46,14 +59,16 @@ class GameState extends Phaser.State implements Model.IGameModel {
         this.shapesGroup.add(s);
         s.inputEnabled = true;
         s.events.onInputDown.add(() => {
-            s.kill();
-            this.shapesGroup.remove(s);
+            if (s.shapeType === this.targetShapeType) {
+                s.kill();
+                this.shapesGroup.remove(s);
+            }
         });
     }
         
     /** Gets all the shapes on the game field */
     public getShapes(): Array<Shape> {
-        return <Array<Shape>> this.shapesGroup.children;
+        return <Array<Shape>>this.shapesGroup.children;
     }
         
     /** Gets the target shape type (the kind of shape the user has to find) */
@@ -67,6 +82,22 @@ class GameState extends Phaser.State implements Model.IGameModel {
      */
     public setTargetShapeType(t: ShapeType): void {
         this.targetShapeType = t;
+        this.raiseChangedEvent();
+    }
+    
+    /** Gets the number of shapes on the game field matching the target shape type */
+    public getTargetCount(): number {
+        return this.getShapes().filter(s => s.shapeType === this.getTargetShapeType()).length;
+    }
+    
+    /** Raises a change event calling all the change listeners */
+    protected raiseChangedEvent(): void {
+        this.changeListeners.forEach(l => l());
+    }
+
+    protected setRandomTarget(): void {
+        var targetIndex = this.rnd.integerInRange(0, this.getShapes().length - 1);
+        this.setTargetShapeType(this.getShapes()[targetIndex].shapeType);
     }
 }
 

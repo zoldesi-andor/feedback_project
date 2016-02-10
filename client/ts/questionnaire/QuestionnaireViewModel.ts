@@ -27,6 +27,8 @@ class QuestionnaireViewModel extends ResultExtenderBase {
 		});
 		
 		console.log(result);
+        
+        NavigationManager.GamePage.go();
 	}
 
 	public process(result: Result): Result {

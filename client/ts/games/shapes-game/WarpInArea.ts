@@ -7,12 +7,12 @@ function min(x1: number, x2: number): number {
 }
 
 class WarpInArea {
-    private gameModel: Model.IGameModel;
+    private gameModel: Model.IShapeGameModel;
     private game: Phaser.Game;
 
     public maxShapeCount = 30;
 
-    constructor(gameModel: Model.IGameModel, game: Phaser.Game) {
+    constructor(gameModel: Model.IShapeGameModel, game: Phaser.Game) {
         this.gameModel = gameModel;
         this.game = game;
 

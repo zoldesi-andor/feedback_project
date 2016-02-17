@@ -4,25 +4,37 @@ import WarpInArea = require("WarpInArea");
 import MenuBar = require("MenuBar");
 import Model = require("Model");
 
-class GameState extends Phaser.State implements Model.IGameModel {
+import GameEventType = require("../GameEventType");
+import GameModel = require("../GameModel");
+
+import FeedbackPlayer = require("../feedback/FeedbackPlayer");
+import ExperimentConfig = require("ExperimentConfig");
+
+class GameState extends Phaser.State implements Model.IShapeGameModel {
 
     private shapesGroup: Phaser.Group;
     private targetShapeType: ShapeType;
     private warpInArea: WarpInArea;
     private menuBar: MenuBar;
+    private feedbackPlayer: FeedbackPlayer;
 
-    private changeListeners: Array<() => void> = [];
+    private changeListeners: Array<(ge: GameModel.IGameEvent) => void> = [];
+
+    private score = 0;
 
     /** Phazer init life cycle callback */
     public init(): void {
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         this.scale.pageAlignHorizontally = true;
         this.scale.pageAlignVertically = true;
+
+        this.feedbackPlayer = new FeedbackPlayer(this.game, this, ExperimentConfig);
     }
 
     /** Phazer preload life cycle callback */
     public preload(): void {
         Shape.loadResources(this.game);
+        this.feedbackPlayer.preload();
     }
 
     /** Phazer create life cycle callback */
@@ -34,6 +46,8 @@ class GameState extends Phaser.State implements Model.IGameModel {
 
         this.menuBar = new MenuBar(this, this.game);
         this.warpInArea = new WarpInArea(this, this.game);
+
+        this.feedbackPlayer.create();
     }
     
     /** Phazer update callback */
@@ -51,6 +65,11 @@ class GameState extends Phaser.State implements Model.IGameModel {
         this.changeListeners.push(func);
     }
     
+    /** Gets the current score */
+    public getScore(): number {
+        return this.score;
+    }
+    
     /** 
      * Adds a new shape to the game field 
      * @param {Shape} s - The shape to add to the game field.
@@ -60,8 +79,13 @@ class GameState extends Phaser.State implements Model.IGameModel {
         s.inputEnabled = true;
         s.events.onInputDown.add(() => {
             if (s.shapeType === this.targetShapeType) {
+                this.score += 1;
                 s.kill();
                 this.shapesGroup.remove(s);
+
+                this.raiseChangedEvent({ EventType: GameEventType.Success });
+            } else {
+                this.raiseChangedEvent({ EventType: GameEventType.Miss });
             }
         });
     }
@@ -82,7 +106,7 @@ class GameState extends Phaser.State implements Model.IGameModel {
      */
     public setTargetShapeType(t: ShapeType): void {
         this.targetShapeType = t;
-        this.raiseChangedEvent();
+        this.raiseChangedEvent({ EventType: GameEventType.Other });
     }
     
     /** Gets the number of shapes on the game field matching the target shape type */
@@ -91,10 +115,11 @@ class GameState extends Phaser.State implements Model.IGameModel {
     }
     
     /** Raises a change event calling all the change listeners */
-    protected raiseChangedEvent(): void {
-        this.changeListeners.forEach(l => l());
+    protected raiseChangedEvent(gameEvent: GameModel.IGameEvent): void {
+        this.changeListeners.forEach(l => l(gameEvent));
     }
 
+    /** Set a random shape type as target shape. */
     protected setRandomTarget(): void {
         var targetIndex = this.rnd.integerInRange(0, this.getShapes().length - 1);
         this.setTargetShapeType(this.getShapes()[targetIndex].shapeType);

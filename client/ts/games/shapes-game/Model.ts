@@ -1,12 +1,10 @@
+import GameModel = require("../GameModel");
 import Shape = require("Shape");
 import ShapeType = require("ShapeType");
 
-declare module Model {
+declare module Model {      
     /** Interface for the game model. */
-    export interface IGameModel {
-        /** Adds a listener which is called on model changes. */
-        addChangeListener(func: () => void): void;    
-        
+    export interface IShapeGameModel extends GameModel.IGameModel {
         /** 
          * Adds a new shape to the game field 
          * @param {Shape} s - The shape to add to the game field.

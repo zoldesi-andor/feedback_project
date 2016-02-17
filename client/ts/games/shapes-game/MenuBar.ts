@@ -2,15 +2,18 @@ import Shape = require("Shape");
 import ShapeType = require("ShapeType");
 import Model = require("Model");
 
+import GameEventType = require("../GameEventType");
+import GameModel = require("../GameModel");
+
 class MenuBar {
 
-    private gameModel: Model.IGameModel;
+    private gameModel: Model.IShapeGameModel;
     private game: Phaser.Game;
     private sprite: Phaser.Sprite;
 
     private targetIndicator: Shape;
 
-    constructor(gameModel: Model.IGameModel, game: Phaser.Game) {
+    constructor(gameModel: Model.IShapeGameModel, game: Phaser.Game) {
         this.gameModel = gameModel;
         this.game = game;
 
@@ -26,7 +29,7 @@ class MenuBar {
         
         this.createTargetIndicator();
         
-        this.gameModel.addChangeListener(() => {
+        this.gameModel.addChangeListener((event) => {
             if (this.targetIndicator.shapeType === this.gameModel.getTargetShapeType()) {
                 return;
             }

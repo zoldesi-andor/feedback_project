@@ -21,12 +21,12 @@ var config: Model.IExperiment = {
             Name: "Encouragement",
             FeedbackEvents: [
                 {
-                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, SecondsToWait: 5 },
+                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, SecondsToWait: 30, IsReoccurring: true },
                     Text: "You can do it!",
-                    ImageUrl: "images/feedback/you-can-do-it.png"
+                    ImageUrl: "images/feedback/you-can-do-it.jpg"
                 },
                 { 
-                    Trigger: { TriggerType: FeedbackTriggerType.SuccessCountBased, NumberOfSuccesses: 3 },
+                    Trigger: { TriggerType: FeedbackTriggerType.SuccessCountBased, NumberOfSuccesses: 3, IsReoccurring: true },
                     Text: "Very Good!",
                     ImageUrl: "images/feedback/very-good.png"
                 }

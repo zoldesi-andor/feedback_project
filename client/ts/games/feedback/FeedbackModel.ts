@@ -5,7 +5,7 @@ declare module FeedbackModel {
         TriggerType: FeedbackTriggerType;
         NumberOfSuccesses?: number;
         SecondsToWait?: number;
-        IsReocuring?: boolean;
+        IsReoccurring?: boolean;
     }
     
     export interface IFeedbackEvent {

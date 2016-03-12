@@ -20,7 +20,11 @@ class FeedbackPlayer {
     }
     
     public preload(): void {
-        
+        this.currentFeedbackOption.FeedbackEvents.forEach((feedbackEvent, index) => {
+            if(feedbackEvent.ImageUrl) {
+                this.game.load.image(feedbackEvent.ImageUrl, feedbackEvent.ImageUrl);
+            }
+        });
     }
     
     public create(): void {
@@ -47,7 +51,11 @@ class FeedbackPlayer {
     }
     
     private createTimeBasedFeedback(event: FeedbackModel.IFeedbackEvent): void {
-        this.game.time.events.add(Phaser.Timer.SECOND * event.Trigger.SecondsToWait, this.showFeedback(event), this);
+        if (event.Trigger.IsReoccurring) {
+            this.game.time.events.loop(Phaser.Timer.SECOND * event.Trigger.SecondsToWait, this.createFnShowFeedback(event), this);
+        } else {
+            this.game.time.events.add(Phaser.Timer.SECOND * event.Trigger.SecondsToWait, this.createFnShowFeedback(event), this);
+        }
     }
     
     private createSuccessCountBasedFeedback(event: FeedbackModel.IFeedbackEvent): void {
@@ -60,20 +68,41 @@ class FeedbackPlayer {
             }
             
             if (!isDisplayed && successCounter >= event.Trigger.NumberOfSuccesses) {
-                isDisplayed = true;
-                this.showFeedback(event)();
+                if (event.Trigger.IsReoccurring) {
+                    successCounter = 0;
+                } else {
+                    isDisplayed = true;
+                }
+                
+                this.createFnShowFeedback(event)();
             }
         });
     }
     
-    private showFeedback(event: FeedbackModel.IFeedbackEvent): () => void {
+    /** Creates a function which displays the feedback when called */
+    private createFnShowFeedback(event: FeedbackModel.IFeedbackEvent): () => void {
         return () => { 
-            var text = this.game.add.text(400, 50, event.Text, { font: "15px Arial", fill: "#ffffff" });
+            var group = this.game.add.group();
+            
+            if (event.Text) {
+                this.game.add.text(350, 50, event.Text, { font: "15px Arial", fill: "#ffffff" }, group)
+                    .anchor.set(0.5, 0.5);
+            }
+            
+            if (event.ImageUrl) {
+                var image = this.game.add.sprite(450, 50, event.ImageUrl, null, group);
+                var scale = 100 / image.width  
+                image.anchor.set(0.5, 0.5);
+                image.scale.setTo(scale, scale);
+            }
             
             var removeFeedback = () => {
-                text.kill();
-                this.game.world.remove(text);
+                this.game.add.tween(group).to( { alpha: 0 }, 500, "Linear", true)
+                .onComplete.add(() => this.game.world.remove(group), this);
             };
+            
+            group.alpha = 0.1;
+            this.game.add.tween(group).to( { alpha: 1 }, 500, "Linear", true);
             
             this.game.time.events.add(Phaser.Timer.SECOND * 5, removeFeedback);
         };

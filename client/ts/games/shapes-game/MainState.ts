@@ -49,7 +49,7 @@ class GameState extends Phaser.State implements Model.IShapeGameModel {
 
         this.feedbackPlayer.create();
     }
-    
+
     /** Phazer update callback */
     public update(): void {
         this.physics.arcade.collide(this.shapesGroup, undefined);
@@ -59,17 +59,17 @@ class GameState extends Phaser.State implements Model.IShapeGameModel {
             this.setRandomTarget();
         }
     }
-    
+
     /** Adds a listener which is called on model changes. */
     public addChangeListener(func: () => void): void {
         this.changeListeners.push(func);
     }
-    
+
     /** Gets the current score */
     public getScore(): number {
         return this.score;
     }
-    
+
     /** 
      * Adds a new shape to the game field 
      * @param {Shape} s - The shape to add to the game field.
@@ -80,8 +80,11 @@ class GameState extends Phaser.State implements Model.IShapeGameModel {
         s.events.onInputDown.add(() => {
             if (s.shapeType === this.targetShapeType) {
                 this.score += 1;
-                s.kill();
-                this.shapesGroup.remove(s);
+
+                this.game.add.tween(s).to({ width: 0, height: 0 }, 500, "Cubic", true).onComplete.add(() => {
+                    s.kill();
+                    this.shapesGroup.remove(s);
+                }, this);
 
                 this.raiseChangedEvent({ EventType: GameEventType.Success });
             } else {
@@ -89,17 +92,17 @@ class GameState extends Phaser.State implements Model.IShapeGameModel {
             }
         });
     }
-        
+
     /** Gets all the shapes on the game field */
     public getShapes(): Array<Shape> {
         return <Array<Shape>>this.shapesGroup.children;
     }
-        
+
     /** Gets the target shape type (the kind of shape the user has to find) */
     public getTargetShapeType(): ShapeType {
         return this.targetShapeType;
     }
-        
+
     /** 
      * Sets the target shape type (the kind of shape the user has to find) 
      * @param {ShapeType} t - The new target shape type.
@@ -108,12 +111,12 @@ class GameState extends Phaser.State implements Model.IShapeGameModel {
         this.targetShapeType = t;
         this.raiseChangedEvent({ EventType: GameEventType.Other });
     }
-    
+
     /** Gets the number of shapes on the game field matching the target shape type */
     public getTargetCount(): number {
         return this.getShapes().filter(s => s.shapeType === this.getTargetShapeType()).length;
     }
-    
+
     /** Raises a change event calling all the change listeners */
     protected raiseChangedEvent(gameEvent: GameModel.IGameEvent): void {
         this.changeListeners.forEach(l => l(gameEvent));

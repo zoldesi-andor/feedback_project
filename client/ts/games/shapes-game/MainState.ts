@@ -6,11 +6,16 @@ import Model = require("Model");
 
 import GameEventType = require("../GameEventType");
 import GameModel = require("../GameModel");
+import State = require("../GameState");
 
 import FeedbackPlayer = require("../feedback/FeedbackPlayer");
 import ExperimentConfig = require("ExperimentConfig");
 
+import StartPopUp = require("../StartPopUp");
+
 class GameState extends Phaser.State implements Model.IShapeGameModel {
+
+    private state: State;
 
     private shapesGroup: Phaser.Group;
     private targetShapeType: ShapeType;
@@ -39,6 +44,8 @@ class GameState extends Phaser.State implements Model.IShapeGameModel {
 
     /** Phazer create life cycle callback */
     public create(): void {
+        this.state = State.Starting;
+
         this.physics.startSystem(Phaser.Physics.ARCADE);
         this.stage.backgroundColor = "#FFFFFF";
         this.shapesGroup = this.add.physicsGroup(Phaser.Physics.ARCADE);
@@ -47,16 +54,19 @@ class GameState extends Phaser.State implements Model.IShapeGameModel {
         this.menuBar = new MenuBar(this, this.game);
         this.warpInArea = new WarpInArea(this, this.game);
 
-        this.feedbackPlayer.create();
+        var startPopUp = new StartPopUp(this.game);
+        startPopUp.addCloseListener(() => this.start());
     }
 
     /** Phazer update callback */
     public update(): void {
-        this.physics.arcade.collide(this.shapesGroup, undefined);
-        this.physics.arcade.collide(this.shapesGroup, this.menuBar.getSprite());
+        if (this.state === State.Running) {
+            this.physics.arcade.collide(this.shapesGroup, undefined);
+            this.physics.arcade.collide(this.shapesGroup, this.menuBar.getSprite());
 
-        if (this.getShapes().length === this.warpInArea.maxShapeCount && this.getTargetCount() === 0) {
-            this.setRandomTarget();
+            if (this.getShapes().length === this.warpInArea.maxShapeCount && this.getTargetCount() === 0) {
+                this.setRandomTarget();
+            }
         }
     }
 
@@ -64,10 +74,20 @@ class GameState extends Phaser.State implements Model.IShapeGameModel {
     public addChangeListener(func: () => void): void {
         this.changeListeners.push(func);
     }
+    
+    /** Removes a change listener */
+    public removeChangeListener(func: () => void): void {
+        this.changeListeners = this.changeListeners.filter(l => l !== func);
+    }
 
     /** Gets the current score */
     public getScore(): number {
         return this.score;
+    }
+
+    /** Gets the current state of the game. */
+    public getState(): State {
+        return this.state;
     }
 
     /** 
@@ -126,6 +146,19 @@ class GameState extends Phaser.State implements Model.IShapeGameModel {
     protected setRandomTarget(): void {
         var targetIndex = this.rnd.integerInRange(0, this.getShapes().length - 1);
         this.setTargetShapeType(this.getShapes()[targetIndex].shapeType);
+    }
+
+    private start(): void {       
+        this.warpInArea.start();
+        this.feedbackPlayer.start();
+        this.menuBar.show();
+        this.state = State.Running;
+    }
+    
+    private stop(): void {
+        this.warpInArea.stop();
+        this.feedbackPlayer.stop();        
+        this.state = State.Ended;
     }
 }
 

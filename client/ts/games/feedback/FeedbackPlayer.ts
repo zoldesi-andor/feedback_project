@@ -10,6 +10,9 @@ class FeedbackPlayer {
     private experiment: FeedbackModel.IExperiment;
 
     private currentFeedbackOption: FeedbackModel.IFeedbackOption;
+    
+    private timers: Array<Phaser.TimerEvent> = [];
+    private listeners: Array<(ge: GameModel.IGameEvent) => void> = [];
 
     constructor(game: Phaser.Game, gameModel: GameModel.IGameModel, experiment: FeedbackModel.IExperiment) {
         this.game = game;
@@ -27,8 +30,15 @@ class FeedbackPlayer {
         });
     }
     
-    public create(): void {
+    /** Starts playing feedbacks */
+    public start(): void {
         this.generateFeedbackElements();
+    }
+    
+    /** Stops playing feedbacks */
+    public stop(): void {
+        this.timers.forEach(t => this.game.time.events.remove(t));
+        this.listeners.forEach(l => this.gameModel.removeChangeListener(l));
     }
 
     private chooseFeedbackOption(): void {
@@ -52,7 +62,8 @@ class FeedbackPlayer {
     
     private createTimeBasedFeedback(event: FeedbackModel.IFeedbackEvent): void {
         if (event.Trigger.IsReoccurring) {
-            this.game.time.events.loop(Phaser.Timer.SECOND * event.Trigger.SecondsToWait, this.createFnShowFeedback(event), this);
+            var timer = this.game.time.events.loop(Phaser.Timer.SECOND * event.Trigger.SecondsToWait, this.createFnShowFeedback(event), this);
+            this.timers.push(timer);
         } else {
             this.game.time.events.add(Phaser.Timer.SECOND * event.Trigger.SecondsToWait, this.createFnShowFeedback(event), this);
         }
@@ -62,7 +73,7 @@ class FeedbackPlayer {
         var successCounter = 0;
         var isDisplayed = false;
         
-        this.gameModel.addChangeListener((ge) => {
+        var listener = (ge: GameModel.IGameEvent) => {
             if (ge.EventType === GameEventType.Success) {
                 successCounter += 1;
             }
@@ -76,7 +87,10 @@ class FeedbackPlayer {
                 
                 this.createFnShowFeedback(event)();
             }
-        });
+        };
+        
+        this.listeners.push(listener);
+        this.gameModel.addChangeListener(listener);
     }
     
     /** Creates a function which displays the feedback when called */

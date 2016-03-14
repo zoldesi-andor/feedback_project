@@ -13,6 +13,9 @@ declare module GameModel {
         /** Adds a listener which is called on model changes. */
         addChangeListener(func: (event: IGameEvent) => void): void;
         
+        /** Removes a change listener */
+        removeChangeListener(func: (event: IGameEvent) => void): void;
+        
         /** Returns the current score */
         getScore(): number;
     }

@@ -7,16 +7,27 @@ function min(x1: number, x2: number): number {
 }
 
 class WarpInArea {
+    
+    public maxShapeCount = 30;
+    
     private gameModel: Model.IShapeGameModel;
     private game: Phaser.Game;
-
-    public maxShapeCount = 30;
+    
+    private timer: Phaser.TimerEvent;
 
     constructor(gameModel: Model.IShapeGameModel, game: Phaser.Game) {
         this.gameModel = gameModel;
         this.game = game;
-
-        this.game.time.events.loop(1000, this.TimerCallback, this);
+    }
+    
+    public start(): void {
+        this.timer = this.game.time.events.loop(1000, this.TimerCallback, this);
+    }
+    
+    public stop(): void {
+        if (this.timer) {
+            this.game.time.events.remove(this.timer);
+        }
     }
 
     public TimerCallback(): void {

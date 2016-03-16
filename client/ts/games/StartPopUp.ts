@@ -29,22 +29,38 @@ class StartPopup {
             bmd);
         this.background.anchor.set(0.5, 0.5);
         this.background.bringToTop();
-        
+
+        var message1 = this.game.make.text(
+            0,
+            -1 * (height * 0.15),
+            "Are you ready?",
+            { font: "50px Roboto", fill: "#212121" });
+        message1.anchor.set(0.5);
+        this.background.addChild(message1);
+
+        var message2 = this.game.make.text(
+            0,
+            (height * 0.15),
+            "Click to start",
+            { font: "30px Roboto", fill: "#212121" });
+        message2.anchor.set(0.5);
+        this.background.addChild(message2);
+
         this.background.inputEnabled = true;
         this.background.events.onInputDown.add(() => this.Close());
     }
-    
+
     /**
      * Closes the popup.
      */
     public Close(): void {
-        this.game.add.tween(this.background).to({width: 0, height: 0}, 500, "Cubic", true)
+        this.game.add.tween(this.background).to({ width: 0, height: 0 }, 500, "Cubic", true)
             .onComplete.add(
-                () => {
-                    this.background.kill();
-                    this.game.world.remove(this.background);
-                    this.closeHandler();
-                }, this)
+            () => {
+                this.background.kill();
+                this.game.world.remove(this.background);
+                this.closeHandler();
+            }, this)
     }
 }
 

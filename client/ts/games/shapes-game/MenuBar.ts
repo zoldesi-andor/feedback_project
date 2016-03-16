@@ -64,6 +64,11 @@ class MenuBar {
     public hide(): void {
         this.game.add.tween(this.sprite).to({ height: 0 }, 500, "Cubic", true);
     }
+    
+    public reset(): void {
+        this.scoreSprite.text = this.formatScoreText(this.gameModel.getScore());
+        this.remainingTime.text = this.formatRemainingTime(this.gameModel.getRemainingTime());
+    }
 
     public getSprite(): Phaser.Sprite {
         return this.sprite;

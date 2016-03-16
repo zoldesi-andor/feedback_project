@@ -26,15 +26,31 @@ class StartPopup {
             Config.maxWidth / 2, Config.maxHeight / 2,
             bmd);
         this.background.anchor.set(0.5, 0.5);
-        this.background.width = this.background.height = 0;
-        this.background.bringToTop();
-        
-        this.background.inputEnabled = true;
-        this.background.events.onInputDown.add(() => {
-            this.game.add.tween(this.background).to({width: 0, height: 0}, 500, "Cubic", true).onComplete.add(playAgain);
+        // this.background.bringToTop();
+
+        var gameOverText = this.game.make.text(
+            0,
+            -100,
+            "Game Over",
+            { font: "50px Roboto", fill: "#212121" });
+        gameOverText.anchor.set(0.5, 0.5);
+        this.background.addChild(gameOverText);
+
+        var playAgainButton = this.game.make.text(
+            0,
+            100,
+            "Play Again!",
+            { font: "30px Roboto", fill: "#212121" });
+        playAgainButton.anchor.set(0.5, 0.5);
+        this.background.addChild(playAgainButton);
+
+        playAgainButton.inputEnabled = true;
+        playAgainButton.events.onInputDown.add(() => {
+            this.game.add.tween(this.background).to({ width: 0, height: 0 }, 500, "Cubic", true).onComplete.add(playAgain);
         });
-        
-        this.game.add.tween(this.background).to({width: width, height: height}, 500, "Cubic", true);
+
+        this.background.width = this.background.height = 0;
+        this.game.add.tween(this.background).to({ width: width, height: height }, 500, "Cubic", true);
     }
 }
 

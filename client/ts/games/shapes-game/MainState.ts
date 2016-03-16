@@ -15,7 +15,7 @@ import StartPopUp = require("../StartPopUp");
 import GameOverPopUp = require("../GameOverPopUp");
 
 var Config = {
-    gameDuration: 10 // 10 sec
+    gameDuration: 120 // 10 sec
 };
 
 class GameState extends Phaser.State implements Model.IShapeGameModel {
@@ -180,7 +180,10 @@ class GameState extends Phaser.State implements Model.IShapeGameModel {
             });
         this.game.time.events.add(
             Config.gameDuration * 1000,
-            () => new GameOverPopUp(this.game, () => this.reset()),
+            () => {
+                this.stop();
+                new GameOverPopUp(this.game, () => this.reset());
+            },
             this);
     }
 
@@ -198,6 +201,8 @@ class GameState extends Phaser.State implements Model.IShapeGameModel {
         this.shapesGroup.removeAll();
         this.targetShapeType = this.getRandomTargetShapeType();
         this.score = 0;
+        
+        this.menuBar.reset();
 
         this.start();
     }

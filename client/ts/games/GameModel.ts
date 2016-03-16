@@ -18,6 +18,9 @@ declare module GameModel {
         
         /** Returns the current score */
         getScore(): number;
+        
+        /** Returns the remaining time */
+        getRemainingTime(): number;
     }
 }
 

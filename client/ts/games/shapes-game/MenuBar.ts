@@ -16,6 +16,7 @@ class MenuBar {
     private game: Phaser.Game;
     private sprite: Phaser.Sprite;
     private scoreSprite: Phaser.Text;
+    private remainingTime: Phaser.Text;
 
     private targetIndicator: Shape;
 
@@ -38,15 +39,21 @@ class MenuBar {
         this.createTargetIndicator(true);
 
         // Creating Score indicator        
-        this.scoreSprite = this.game.make.text(700, 50, "Score: 0", { font: "40px Roboto", fill: "#ffffff" });
+        this.scoreSprite = this.game.make.text(700, 75, "Score: 0", { font: "20px Roboto", fill: "#ffffff" });
         this.scoreSprite.anchor.set(0.5, 0.5);
         this.sprite.addChild(this.scoreSprite);
+
+        // Creating Score indicator        
+        this.remainingTime = this.game.make.text(700, 25, "", { font: "20px Roboto", fill: "#ffffff" });
+        this.remainingTime.anchor.set(0.5, 0.5);
+        this.sprite.addChild(this.remainingTime);
 
         this.sprite.height = 0;
 
         this.gameModel.addChangeListener((event) => {
             this.checkForTargetChange();
             this.checkForScoreChange(event);
+            this.checkForRemainingTimeChange(event);
         });
     }
 
@@ -69,6 +76,12 @@ class MenuBar {
     private checkForScoreChange(event: GameModel.IGameEvent): void {
         if (event.EventType === GameEventType.Success) {
             this.scoreSprite.text = this.formatScoreText(this.gameModel.getScore());
+        }
+    }
+    
+    private checkForRemainingTimeChange(event: GameModel.IGameEvent): void {
+        if (event.EventType === GameEventType.Other) {
+            this.remainingTime.text = this.formatRemainingTime(this.gameModel.getRemainingTime());
         }
     }
 
@@ -102,6 +115,24 @@ class MenuBar {
 
     private formatScoreText(score: number): string {
         return "Score " + score;
+    }
+    
+    private formatRemainingTime(time: number): string {
+        
+        var result = "";
+        
+        while(time > 0) {
+            var t = Math.floor(time/60) || time;
+            
+            result += (t < 10 ? "0" : "") + t.toString();
+            time = time - t * 60;
+            
+            if(time > 0) {
+                result += ":";
+            }
+        }
+        
+        return result;
     }
 }
 

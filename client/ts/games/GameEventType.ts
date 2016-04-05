@@ -2,6 +2,7 @@
 enum GameEventType {
     Success,
     Miss,
+    Progress,
     Other
 }
 

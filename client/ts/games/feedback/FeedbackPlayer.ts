@@ -50,7 +50,10 @@ class FeedbackPlayer {
         this.currentFeedbackOption.FeedbackEvents.forEach(event => {
             switch (event.Trigger.TriggerType) {
                 case FeedbackTriggerType.SuccessCountBased:
-                    this.createSuccessCountBasedFeedback(event);
+                    this.createEventCountBasedFeedback(event, GameEventType.Success);
+                    break;
+                case FeedbackTriggerType.ProgressCountBased:
+                    this.createEventCountBasedFeedback(event, GameEventType.Progress);
                     break;
                 case FeedbackTriggerType.TimeBased:
                     this.createTimeBasedFeedback(event);
@@ -69,16 +72,16 @@ class FeedbackPlayer {
         }
     }
     
-    private createSuccessCountBasedFeedback(event: FeedbackModel.IFeedbackEvent): void {
+    private createEventCountBasedFeedback(event: FeedbackModel.IFeedbackEvent, eventType: GameEventType): void {
         var successCounter = 0;
         var isDisplayed = false;
         
         var listener = (ge: GameModel.IGameEvent) => {
-            if (ge.EventType === GameEventType.Success) {
+            if (ge.EventType === eventType) {
                 successCounter += 1;
             }
             
-            if (!isDisplayed && successCounter >= event.Trigger.NumberOfSuccesses) {
+            if (!isDisplayed && successCounter >= event.Trigger.NumberOfEvents) {
                 if (event.Trigger.IsReoccurring) {
                     successCounter = 0;
                 } else {

@@ -142,7 +142,7 @@ class GameState extends Phaser.State implements Model.IShapeGameModel {
      */
     public setTargetShapeType(t: ShapeType): void {
         this.targetShapeType = t;
-        this.raiseChangedEvent({ EventType: GameEventType.Other });
+        this.raiseChangedEvent({ EventType: GameEventType.Progress });
     }
 
     /** Gets the number of shapes on the game field matching the target shape type */

@@ -1,5 +1,6 @@
 enum FeedbackTriggerType {
     SuccessCountBased,
+    ProgressCountBased,
     TimeBased
 }
 

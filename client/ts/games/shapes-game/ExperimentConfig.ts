@@ -11,7 +11,7 @@ var config: Model.IExperiment = {
             Name: "Praise",
             FeedbackEvents: [
                 { 
-                    Trigger: { TriggerType: FeedbackTriggerType.SuccessCountBased, NumberOfSuccesses: 3 },
+                    Trigger: { TriggerType: FeedbackTriggerType.SuccessCountBased, NumberOfEvents: 3 },
                     Text: "Very Good!",
                     ImageUrl: "images/feedback/very-good.png"
                 }
@@ -26,7 +26,7 @@ var config: Model.IExperiment = {
                     ImageUrl: "images/feedback/you-can-do-it.jpg"
                 },
                 { 
-                    Trigger: { TriggerType: FeedbackTriggerType.SuccessCountBased, NumberOfSuccesses: 3, IsReoccurring: true },
+                    Trigger: { TriggerType: FeedbackTriggerType.ProgressCountBased, NumberOfEvents: 1, IsReoccurring: true },
                     Text: "Very Good!",
                     ImageUrl: "images/feedback/very-good.png"
                 }

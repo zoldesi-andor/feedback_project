@@ -110,7 +110,6 @@ class MenuBar {
         var height = this.targetIndicator.height;
 
         this.sprite.addChild(this.targetIndicator);
-        this.targetIndicator.bringToTop();
 
         if (!noTween) {
             this.targetIndicator.width = this.targetIndicator.height = 0;

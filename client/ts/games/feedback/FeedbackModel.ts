@@ -3,7 +3,7 @@ import FeedbackTriggerType = require("FeedbackTriggerType");
 declare module FeedbackModel {   
     export interface IFeedbackTrigger { 
         TriggerType: FeedbackTriggerType;
-        NumberOfSuccesses?: number;
+        NumberOfEvents?: number;
         SecondsToWait?: number;
         IsReoccurring?: boolean;
     }

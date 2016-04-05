@@ -1,11 +1,14 @@
-
+import * as FeedbackModel from "./feedback/FeedbackModel";
 import GameEventType = require("./GameEventType");
 
 declare module GameModel {    
+    
     /** Interface for Game Events */
     export interface IGameEvent {
         Data?: any;
         EventType: GameEventType;
+        Time: number;
+        Score: number;
     }
     
     /** General interface for game models */
@@ -21,6 +24,9 @@ declare module GameModel {
         
         /** Returns the remaining time */
         getRemainingTime(): number;
+        
+        /** Creates a callback function which can be used to display a feedback. */
+        createShowFeedbackFunction(event: FeedbackModel.IFeedbackEvent): () => void;
     }
 }
 

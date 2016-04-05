@@ -85,7 +85,7 @@ class MenuBar {
     }
     
     private checkForRemainingTimeChange(event: GameModel.IGameEvent): void {
-        if (event.EventType === GameEventType.Other) {
+        if (event.EventType === GameEventType.TimerTick) {
             this.remainingTime.text = this.formatRemainingTime(this.gameModel.getRemainingTime());
         }
     }

@@ -1,6 +1,9 @@
 import QuestionViewModel = require('QuestionViewModel');
 import NavigationManager = require('../common/NavigationManager');
 import ResultExtenderBase = require("../common/ResultExtenderBase");
+import {Result} from "../common/Result";
+import {IResultExtender} from "../common/IResultExtender";
+import DataAccess from "../common/DataAccess";
 
 /** View model for a questionnaire */
 class QuestionnaireViewModel extends ResultExtenderBase {
@@ -27,6 +30,7 @@ class QuestionnaireViewModel extends ResultExtenderBase {
 		});
 		
 		console.log(result);
+		DataAccess.store(result);
         
         NavigationManager.GamePage.go();
 	}

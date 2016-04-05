@@ -522,7 +522,7 @@ declare module "express" {
              *   - `headers`  object of headers to serve with file
              *   - `dotfiles` serve dotfiles, defaulting to false; can be `"allow"` to send them
              *
-             * Other options are passed along to `send`.
+             * TimerTick options are passed along to `send`.
              *
              * Examples:
              *

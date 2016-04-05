@@ -947,7 +947,7 @@ interface JQueryStatic {
     contains(container: Element, contained: Element): boolean;
 
     /**
-     * A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. Other objects are iterated via their named properties.
+     * A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. TimerTick objects are iterated via their named properties.
      * 
      * @param collection The object or array to iterate over.
      * @param callback The function that will be executed on every object.
@@ -958,7 +958,7 @@ interface JQueryStatic {
         ): any;
 
     /**
-     * A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. Other objects are iterated via their named properties.
+     * A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. TimerTick objects are iterated via their named properties.
      * 
      * @param collection The object or array to iterate over.
      * @param callback The function that will be executed on every object.

@@ -1392,7 +1392,7 @@ declare module "path" {
      */
     export function join(...paths: string[]): string;
     /**
-     * The right-most parameter is considered {to}.  Other parameters are considered an array of {from}.
+     * The right-most parameter is considered {to}.  TimerTick parameters are considered an array of {from}.
      *
      * Starting from leftmost {from} paramter, resolves {to} to an absolute path.
      *

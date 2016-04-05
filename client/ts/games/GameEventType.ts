@@ -3,7 +3,8 @@ enum GameEventType {
     Success,
     Miss,
     Progress,
-    Other
+    TimerTick,
+    FeedbackPlayed
 }
 
 export = GameEventType;

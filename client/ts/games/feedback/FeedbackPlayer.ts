@@ -1,20 +1,21 @@
 import FeedbackTriggerType = require("./FeedbackTriggerType");
-import FeedbackModel = require("FeedbackModel");
 import GameEventType = require("../GameEventType");
 import GameModel = require("../GameModel");
 
-class FeedbackPlayer {
+import {IExperiment, IFeedbackOption, IFeedbackEvent} from "./FeedbackModel";
+
+export default class FeedbackPlayer {
 
     private game: Phaser.Game;
     private gameModel: GameModel.IGameModel;
-    private experiment: FeedbackModel.IExperiment;
+    private experiment: IExperiment;
 
-    private currentFeedbackOption: FeedbackModel.IFeedbackOption;
+    private currentFeedbackOption: IFeedbackOption;
     
     private timers: Array<Phaser.TimerEvent> = [];
     private listeners: Array<(ge: GameModel.IGameEvent) => void> = [];
 
-    constructor(game: Phaser.Game, gameModel: GameModel.IGameModel, experiment: FeedbackModel.IExperiment) {
+    constructor(game: Phaser.Game, gameModel: GameModel.IGameModel, experiment: IExperiment) {
         this.game = game;
         this.gameModel = gameModel;
         this.experiment = experiment;
@@ -63,16 +64,16 @@ class FeedbackPlayer {
         });
     }
     
-    private createTimeBasedFeedback(event: FeedbackModel.IFeedbackEvent): void {
+    private createTimeBasedFeedback(event: IFeedbackEvent): void {
         if (event.Trigger.IsReoccurring) {
-            var timer = this.game.time.events.loop(Phaser.Timer.SECOND * event.Trigger.SecondsToWait, this.createFnShowFeedback(event), this);
+            var timer = this.game.time.events.loop(Phaser.Timer.SECOND * event.Trigger.SecondsToWait, this.gameModel.createShowFeedbackFunction(event), this);
             this.timers.push(timer);
         } else {
-            this.game.time.events.add(Phaser.Timer.SECOND * event.Trigger.SecondsToWait, this.createFnShowFeedback(event), this);
+            this.game.time.events.add(Phaser.Timer.SECOND * event.Trigger.SecondsToWait, this.gameModel.createShowFeedbackFunction(event), this);
         }
     }
     
-    private createEventCountBasedFeedback(event: FeedbackModel.IFeedbackEvent, eventType: GameEventType): void {
+    private createEventCountBasedFeedback(event: IFeedbackEvent, eventType: GameEventType): void {
         var successCounter = 0;
         var isDisplayed = false;
         
@@ -88,42 +89,11 @@ class FeedbackPlayer {
                     isDisplayed = true;
                 }
                 
-                this.createFnShowFeedback(event)();
+                this.gameModel.createShowFeedbackFunction(event)();
             }
         };
         
         this.listeners.push(listener);
         this.gameModel.addChangeListener(listener);
     }
-    
-    /** Creates a function which displays the feedback when called */
-    private createFnShowFeedback(event: FeedbackModel.IFeedbackEvent): () => void {
-        return () => { 
-            var group = this.game.add.group();
-            
-            if (event.Text) {
-                this.game.add.text(350, 50, event.Text, { font: "15px Arial", fill: "#ffffff" }, group)
-                    .anchor.set(0.5, 0.5);
-            }
-            
-            if (event.ImageUrl) {
-                var image = this.game.add.sprite(450, 50, event.ImageUrl, null, group);
-                var scale = 100 / image.width  
-                image.anchor.set(0.5, 0.5);
-                image.scale.setTo(scale, scale);
-            }
-            
-            var removeFeedback = () => {
-                this.game.add.tween(group).to( { alpha: 0 }, 500, "Linear", true)
-                .onComplete.add(() => this.game.world.remove(group), this);
-            };
-            
-            group.alpha = 0.1;
-            this.game.add.tween(group).to( { alpha: 1 }, 500, "Linear", true);
-            
-            this.game.time.events.add(Phaser.Timer.SECOND * 5, removeFeedback);
-        };
-    }
 }
-
-export = FeedbackPlayer;

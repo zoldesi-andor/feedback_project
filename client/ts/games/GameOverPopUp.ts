@@ -5,7 +5,7 @@ var Config = {
     maxWidth: 800
 }
 
-class StartPopup {
+class GameOverPopUp {
 
     private game: Phaser.Game;
     private background: Phaser.Sprite;
@@ -46,7 +46,10 @@ class StartPopup {
 
         playAgainButton.inputEnabled = true;
         playAgainButton.events.onInputDown.add(() => {
-            this.game.add.tween(this.background).to({ width: 0, height: 0 }, 500, "Cubic", true).onComplete.add(playAgain);
+            this.game.add.tween(this.background).to({ width: 0, height: 0 }, 500, "Cubic", true).onComplete.add(() => {
+                playAgainButton.kill();
+                playAgain();
+            });
         });
 
         this.background.width = this.background.height = 0;
@@ -54,4 +57,4 @@ class StartPopup {
     }
 }
 
-export = StartPopup;
+export = GameOverPopUp;

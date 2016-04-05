@@ -23,7 +23,7 @@ import FeedbackPlayer from "../feedback/FeedbackPlayer";
 import {IFeedbackEvent} from "../feedback/FeedbackModel";
 
 var Config = {
-    gameDuration: 30 // 10 sec
+    gameDuration: 10 // 10 sec
 };
 
 var result = DataAccess.load();
@@ -187,7 +187,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
         if(event.EventType !== GameEventType.TimerTick) {
             this.gameEvents.push(event);
         }
-        
+
         this.changeListeners.forEach(l => l(event));
     }
 
@@ -265,8 +265,6 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
     }
 
     private reset(): void {
-        this.stop();
-
         this.shapesGroup.removeAll();
         this.targetShapeType = this.getRandomTargetShapeType();
         this.score = 0;

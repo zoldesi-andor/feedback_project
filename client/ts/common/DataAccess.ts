@@ -26,6 +26,12 @@ export default class DataAccess {
      * @param result
      */
     public static send(result: Result): void {
-        console.log(result);
+        $.ajax({
+            type: "POST",
+            url: "/api/result",
+            data: JSON.stringify(result),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+        });
     }
 }

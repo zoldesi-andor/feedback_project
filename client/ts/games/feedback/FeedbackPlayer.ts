@@ -42,9 +42,23 @@ export default class FeedbackPlayer {
         this.listeners.forEach(l => this.gameModel.removeChangeListener(l));
     }
 
+    /** Gets the start feedback event */
+    public getStartFeedback(): IFeedbackEvent {
+        return this.currentFeedbackOption.FeedbackEvents.filter(e => e.Trigger.TriggerType === FeedbackTriggerType.Begin)[0];
+    }
+
+    /** Gets the game over feedback event */
+    public getEndFeedback(): IFeedbackEvent {
+        return this.currentFeedbackOption.FeedbackEvents.filter(e => e.Trigger.TriggerType === FeedbackTriggerType.End)[0];
+    }
+
     private chooseFeedbackOption(): void {
-        // var index = this.game.rnd.integerInRange(0, this.experiment.FeedbackOptions.length - 1);
-        this.currentFeedbackOption = this.experiment.FeedbackOptions[2];
+        var index = this.game.rnd.integerInRange(0, this.experiment.FeedbackOptions.length - 1);
+        this.currentFeedbackOption = this.experiment.FeedbackOptions[index];
+
+        if(console && console.log) {
+            console.log(`Using feedback option: ${this.currentFeedbackOption.Name}`);
+        }
     }
 
     private generateFeedbackElements(): void {

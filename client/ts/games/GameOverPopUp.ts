@@ -1,16 +1,12 @@
-
-
-var Config = {
-    maxHeight: window.innerHeight,
-    maxWidth: 800
-}
+import Config from "./shapes-game/Config";
+import {IFeedbackEvent} from "./feedback/FeedbackModel";
 
 class GameOverPopUp {
 
     private game: Phaser.Game;
     private background: Phaser.Sprite;
 
-    constructor(game: Phaser.Game, playAgain: () => void) {
+    constructor(game: Phaser.Game, playAgain: () => void, feedback: IFeedbackEvent) {
         this.game = game;
 
         var height = Config.maxHeight * 0.8;
@@ -30,15 +26,35 @@ class GameOverPopUp {
 
         var gameOverText = this.game.make.text(
             0,
-            -100,
+            -200,
             "Game Over",
             { font: "50px Roboto", fill: "#212121" });
         gameOverText.anchor.set(0.5, 0.5);
         this.background.addChild(gameOverText);
 
+        if(feedback) {
+            if (feedback.ImageUrl) {
+                var image = this.game.make.sprite(0, -50, feedback.ImageUrl, null);
+                var scale = 100 / image.width
+                image.anchor.set(0.5, 0.5);
+                image.scale.setTo(scale, scale);
+                this.background.addChild(image);
+            }
+
+            if (feedback.Text) {
+                var text = this.game.make.text(
+                    0,
+                    50,
+                    feedback.Text,
+                    { font: "30px Roboto", fill: "#212121" });
+                text.anchor.set(0.5, 0.5);
+                this.background.addChild(text);
+            }
+        }
+
         var playAgainButton = this.game.make.text(
             0,
-            100,
+            200,
             "Play Again!",
             { font: "30px Roboto", fill: "#212121" });
         playAgainButton.anchor.set(0.5, 0.5);

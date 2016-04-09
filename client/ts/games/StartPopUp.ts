@@ -1,8 +1,5 @@
-
-var Config = {
-    maxHeight: window.innerHeight,
-    maxWidth: 800
-}
+import Config from "./shapes-game/Config";
+import {IFeedbackEvent} from "./feedback/FeedbackModel";
 
 class StartPopup {
 
@@ -11,7 +8,7 @@ class StartPopup {
 
     private closeHandler: () => void;
 
-    constructor(game: Phaser.Game, onClose: () => void) {
+    constructor(game: Phaser.Game, onClose: () => void, feedback: IFeedbackEvent) {
         this.game = game;
         this.closeHandler = onClose;
 
@@ -32,15 +29,35 @@ class StartPopup {
 
         var message1 = this.game.make.text(
             0,
-            -1 * (height * 0.15),
+            -200,//-1 * (height * 0.15),
             "Are you ready?",
             { font: "50px Roboto", fill: "#212121" });
         message1.anchor.set(0.5);
         this.background.addChild(message1);
 
+        if(feedback) {
+            if (feedback.ImageUrl) {
+                var image = this.game.make.sprite(0, -50, feedback.ImageUrl, null);
+                var scale = 100 / image.width
+                image.anchor.set(0.5, 0.5);
+                image.scale.setTo(scale, scale);
+                this.background.addChild(image);
+            }
+
+            if (feedback.Text) {
+                var text = this.game.make.text(
+                    0,
+                    50,
+                    feedback.Text,
+                    { font: "40px Roboto", fill: "#212121" });
+                text.anchor.set(0.5, 0.5);
+                this.background.addChild(text);
+            }
+        }
+
         var message2 = this.game.make.text(
             0,
-            (height * 0.15),
+            200,//(height * 0.15),
             "Click to start",
             { font: "30px Roboto", fill: "#212121" });
         message2.anchor.set(0.5);

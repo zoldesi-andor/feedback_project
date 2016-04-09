@@ -22,9 +22,7 @@ import {Result} from "../../common/Result";
 import FeedbackPlayer from "../feedback/FeedbackPlayer";
 import {IFeedbackEvent} from "../feedback/FeedbackModel";
 
-var Config = {
-    gameDuration: 10 // 10 sec
-};
+import Config from "./Config";
 
 var result = DataAccess.load();
 
@@ -78,7 +76,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
         this.menuBar = new MenuBar(this, this.game);
         this.warpInArea = new WarpInArea(this, this.game);
 
-        new StartPopUp(this.game, () => this.start());
+        new StartPopUp(this.game, () => this.start(), this.feedbackPlayer.getStartFeedback());
     }
 
     /** Phazer update callback */
@@ -197,7 +195,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
             var group = this.game.add.group();
 
             if (event.Text) {
-                this.game.add.text(350, 50, event.Text, { font: "15px Arial", fill: "#ffffff" }, group)
+                this.game.add.text(350, 50, event.Text, { font: "15px Roboto", fill: "#ffffff" }, group)
                     .anchor.set(0.5, 0.5);
             }
 
@@ -248,7 +246,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
             Config.gameDuration * 1000,
             () => {
                 this.stop();
-                new GameOverPopUp(this.game, () => this.reset());
+                new GameOverPopUp(this.game, () => this.reset(), this.feedbackPlayer.getEndFeedback());
             },
             this);
     }

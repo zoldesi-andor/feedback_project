@@ -1,7 +1,9 @@
 enum FeedbackTriggerType {
     SuccessCountBased,
     ProgressCountBased,
-    TimeBased
+    TimeBased,
+    Begin,
+    End
 }
 
 export = FeedbackTriggerType;

@@ -5,10 +5,7 @@ import Model = require("Model");
 import GameEventType = require("../GameEventType");
 import GameModel = require("../GameModel");
 
-var Config = {
-    width: 800,
-    height: 100
-};
+import Config from "./Config";
 
 class MenuBar {
 

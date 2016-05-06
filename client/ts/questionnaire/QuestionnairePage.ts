@@ -15,7 +15,7 @@ requirejs(
 
 		var config = {
             "Age": age,
-			"Genger": [["Male", "male"], ["Female", "female"]],
+			"Gender": [["Male", "male"], ["Female", "female"]],
             "Country": flags.map(flag => [createFlagTag(flag), ""]),
             "Have you played this game before?": [["Yes", "yes"], ["No", "no"]]
 		};

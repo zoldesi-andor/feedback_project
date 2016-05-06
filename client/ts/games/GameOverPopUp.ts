@@ -1,13 +1,16 @@
 import Config from "./shapes-game/Config";
 import {IFeedbackEvent} from "./feedback/FeedbackModel";
+import {IGameModel} from "./GameModel";
 
 class GameOverPopUp {
 
     private game: Phaser.Game;
+    private gameModel: IGameModel;
     private background: Phaser.Sprite;
 
-    constructor(game: Phaser.Game, playAgain: () => void, feedback: IFeedbackEvent) {
+    constructor(game: Phaser.Game, gameModel: IGameModel, playAgain: () => void, feedback: IFeedbackEvent) {
         this.game = game;
+        this.gameModel = gameModel;
 
         var height = Config.maxHeight * 0.8;
         var width = Config.maxWidth * 0.8;
@@ -27,7 +30,7 @@ class GameOverPopUp {
         var gameOverText = this.game.make.text(
             0,
             -200,
-            "Game Over",
+            `Congratulations you scored ${this.gameModel.getScore()}!`,
             { font: "50px Roboto", fill: "#212121" });
         gameOverText.anchor.set(0.5, 0.5);
         this.background.addChild(gameOverText);

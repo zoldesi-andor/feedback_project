@@ -85,7 +85,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
             this.physics.arcade.collide(this.shapesGroup, undefined);
             this.physics.arcade.collide(this.shapesGroup, this.menuBar.getSprite());
 
-            if (this.getShapes().length === this.warpInArea.maxShapeCount && this.getTargetCount() === 0) {
+            if (this.getShapes().length >= this.warpInArea.maxShapeCount - 1 && this.getTargetCount() === 0) {
                 this.setRandomTarget();
             }
         }
@@ -201,7 +201,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
 
             if (event.ImageUrl) {
                 var image = this.game.add.sprite(450, 50, event.ImageUrl, null, group);
-                var scale = 100 / image.width
+                var scale = 100 / image.width;
                 image.anchor.set(0.5, 0.5);
                 image.scale.setTo(scale, scale);
             }
@@ -246,7 +246,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
             Config.gameDuration * 1000,
             () => {
                 this.stop();
-                new GameOverPopUp(this.game, () => this.reset(), this.feedbackPlayer.getEndFeedback());
+                new GameOverPopUp(this.game, this, () => this.reset(), this.feedbackPlayer.getEndFeedback());
             },
             this);
     }

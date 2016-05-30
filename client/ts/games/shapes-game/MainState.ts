@@ -33,7 +33,6 @@ if(!result) {
 class MainState extends Phaser.State implements Model.IShapeGameModel, IResultExtender {
     private state: State;
 
-    private feedbackGroup: Phaser.Group;
     private shapesGroup: Phaser.Group;
     private targetShapeType: ShapeType;
     private warpInArea: WarpInArea;
@@ -67,8 +66,6 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
     /** Phazer create life cycle callback */
     public create(): void {
         this.state = State.Starting;
-
-        this.feedbackGroup = this.add.group();
 
         this.physics.startSystem(Phaser.Physics.ARCADE);
         this.stage.backgroundColor = "#FFFFFF";
@@ -195,7 +192,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
     /** Creates a callback function which can be used to display a feedback. */
     public createShowFeedbackFunction(event:IFeedbackEvent):()=>void {
         return () => {
-            var group = this.game.add.group(this.feedbackGroup);
+            var group = this.game.add.group();
 
             if (event.Text) {
                 this.game.add.text(350, 50, event.Text, { font: "15px Roboto", fill: "#ffffff" }, group)
@@ -203,21 +200,15 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
             }
 
             if (event.ImageUrl) {
-                var posX = Config.maxWidth / 2;
-                var posY = Config.maxHeight / 2;
-
-                var image = this.game.add.sprite(posX, posY, event.ImageUrl, null, group);
-                image.alpha = 0.3;
-
-                var scale = Config.maxWidth / image.width * 0.75;
-
+                var image = this.game.add.sprite(450, 50, event.ImageUrl, null, group);
+                var scale = 100 / image.width;
                 image.anchor.set(0.5, 0.5);
                 image.scale.setTo(scale, scale);
             }
 
             var removeFeedback = () => {
                 this.game.add.tween(group).to( { alpha: 0 }, 500, "Linear", true)
-                    .onComplete.add(() => this.feedbackGroup.remove(group), this);
+                    .onComplete.add(() => this.game.world.remove(group), this);
             };
 
             group.alpha = 0.1;

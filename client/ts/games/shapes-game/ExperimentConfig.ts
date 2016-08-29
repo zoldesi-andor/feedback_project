@@ -51,27 +51,27 @@ var config: Model.IExperiment = {
                     ImageUrl: "images/feedback/good-luck.png"
                 },
                 { 
-                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, SecondsToWait: 20 },
+                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, NumberOfEvents: 20,},
                     Text: "You can do it!",
                     ImageUrl: "images/feedback/very-good.png"
                 },
                 {
-                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, SecondsToWait: 40 },
+                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, NumberOfEvents: 40 },
                     Text: "Fingers Crossed!",
                     ImageUrl: "images/feedback/fingers-crossed.png"
                 },
                 {
-                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, SecondsToWait: 60 },
+                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, NumberOfEvents: 60 },
                     Text: "You can do it!",
                     ImageUrl: "images/feedback/keep-going.png"
                 },
                 {
-                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, SecondsToWait: 80 },
+                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, NumberOfEvents: 80 },
                     Text: "Yayy, do it!",
                     ImageUrl: "images/feedback/yayy-do-it.png"
                 },
                 {
-                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, SecondsToWait: 100 },
+                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, NumberOfEvents: 100 },
                     Text: "Go on!",
                     ImageUrl: "images/feedback/go-on.png"
                 }

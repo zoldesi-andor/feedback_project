@@ -71,7 +71,7 @@ export default class FeedbackPlayer {
                     this.createEventCountBasedFeedback(event, GameEventType.Progress);
                     break;
                 case FeedbackTriggerType.TimeBased:
-                    this.createTimeBasedFeedback(event);
+                    this.createEventCountBasedFeedback(event, GameEventType.TimerTick);
                     break;
                 default: if (console) { console.log("Unrecognised trigger type:" + event.Trigger.TriggerType); }
             }

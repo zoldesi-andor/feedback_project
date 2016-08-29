@@ -23,6 +23,7 @@ import FeedbackPlayer from "../feedback/FeedbackPlayer";
 import {IFeedbackEvent} from "../feedback/FeedbackModel";
 
 import Config from "./Config";
+import GameState = require("../GameState");
 
 var result = DataAccess.load();
 
@@ -68,13 +69,15 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
     public create(): void {
         this.state = State.Starting;
 
-        this.feedbackGroup = this.add.group();
+
 
         this.physics.startSystem(Phaser.Physics.ARCADE);
         this.stage.backgroundColor = "#FFFFFF";
         this.shapesGroup = this.add.physicsGroup(Phaser.Physics.ARCADE);
 
         this.targetShapeType = this.getRandomTargetShapeType();
+
+        this.feedbackGroup = this.add.group();
 
         this.menuBar = new MenuBar(this, this.game);
         this.warpInArea = new WarpInArea(this, this.game);
@@ -198,8 +201,9 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
             var group = this.game.add.group(this.feedbackGroup);
 
             if (event.Text) {
-                this.game.add.text(350, 50, event.Text, { font: "15px Roboto", fill: "#ffffff" }, group)
-                    .anchor.set(0.5, 0.5);
+                var text = this.game.add.text(350, 50, event.Text, { font: "15px Roboto", fill: "#ffffff" }, group);
+                text.anchor.set(0.5, 0.5);
+                text.inputEnabled = true;
             }
 
             if (event.ImageUrl) {
@@ -207,23 +211,33 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
                 var posY = Config.maxHeight / 2;
 
                 var image = this.game.add.sprite(posX, posY, event.ImageUrl, null, group);
-                image.alpha = 0.3;
-
                 var scale = Config.maxWidth / image.width * 0.75;
 
                 image.anchor.set(0.5, 0.5);
                 image.scale.setTo(scale, scale);
+                image.inputEnabled = true;
             }
 
             var removeFeedback = () => {
-                this.game.add.tween(group).to( { alpha: 0 }, 500, "Linear", true)
+                this.unpause();
+                this.game.add.tween(group).to( { alpha: 0, width: 0, height: 0 }, 500, "Linear", true)
                     .onComplete.add(() => this.feedbackGroup.remove(group), this);
             };
 
-            group.alpha = 0.1;
-            this.game.add.tween(group).to( { alpha: 1 }, 500, "Linear", true);
+            var w = group.width;
+            var h = group.height;
 
-            this.game.time.events.add(Phaser.Timer.SECOND * 5, removeFeedback);
+            group.alpha = 0.1;
+            group.width = group.height = 0;
+
+            this.game.add.tween(group).to( {
+                alpha: 1,
+                width: w,
+                height: h
+            } , 500, "Cubic", true);
+            this.pause();
+
+            group.onChildInputDown.add(() => removeFeedback());
             this.raiseChangedEvent(GameEventType.FeedbackPlayed, event);
         };
     }
@@ -248,8 +262,10 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
         this.gameTimer = this.game.time.events.loop(
             1000,
             () => {
-                this.remainingTime = this.remainingTime - 1;
-                this.raiseChangedEvent(GameEventType.TimerTick);
+                if(this.state === GameState.Running) {
+                    this.remainingTime = this.remainingTime - 1;
+                    this.raiseChangedEvent(GameEventType.TimerTick);
+                }
             });
         this.game.time.events.add(
             Config.gameDuration * 1000,
@@ -280,6 +296,16 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
         this.menuBar.reset();
 
         this.start();
+    }
+
+    private pause(): void {
+        this.state = GameState.Paused;
+        (<any>this.game.physics.arcade).isPaused = true;
+    }
+
+    private unpause(): void {
+        this.state = GameState.Running;
+        (<any>this.game.physics.arcade).isPaused = false;
     }
 }
 

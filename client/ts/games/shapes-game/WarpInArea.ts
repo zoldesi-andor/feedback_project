@@ -1,6 +1,7 @@
 import ShapeType = require("ShapeType");
 import Shape = require("Shape");
 import Model = require("Model");
+import GameState = require("../GameState");
 
 function min(x1: number, x2: number): number {
     return x1 < x2 ? x1 : x2;
@@ -31,6 +32,10 @@ class WarpInArea {
     }
 
     public TimerCallback(): void {
+        if(this.gameModel.getState() !== GameState.Running) {
+            return;
+        }
+
         var missing = this.maxShapeCount - this.gameModel.getShapes().length;
         if (missing > 0) {
             for (var i = 0; i < min(missing, 3); i++) {

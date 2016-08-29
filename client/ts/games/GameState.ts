@@ -1,7 +1,8 @@
 enum GameState {
     Starting,
     Running,
-    Ended    
+    Ended,
+    Paused
 }
 
 export = GameState;

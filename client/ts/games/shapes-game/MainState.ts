@@ -51,7 +51,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
 
     private gameEvents: Array<IGameEvent> = [];
 
-    /** Phazer init life cycle callback */
+    /** Phaser init life cycle callback */
     public init(): void {
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         this.scale.pageAlignHorizontally = true;
@@ -60,14 +60,14 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
         this.feedbackPlayer = new FeedbackPlayer(this.game, this, ExperimentConfig);
     }
 
-    /** Phazer preload life cycle callback */
+    /** Phaser preload life cycle callback */
     public preload(): void {
         Shape.loadResources(this.game);
         this.feedbackPlayer.preload();
         CommonResources.loadResources(this.game);
     }
 
-    /** Phazer create life cycle callback */
+    /** Phaser create life cycle callback */
     public create(): void {
         this.state = State.Starting;
 
@@ -87,7 +87,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
         new StartPopUp(this.game, () => this.start(), this.feedbackPlayer.getStartFeedback());
     }
 
-    /** Phazer update callback */
+    /** Phaser update callback */
     public update(): void {
         if (this.state === State.Running) {
             this.physics.arcade.collide(this.shapesGroup, undefined);
@@ -200,46 +200,65 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
     /** Creates a callback function which can be used to display a feedback. */
     public createShowFeedbackFunction(event:IFeedbackEvent):()=>void {
         return () => {
-            var group = this.game.add.group(this.feedbackGroup);
+
+            var background = this.game.add.sprite(
+                Config.maxWidth * 0.7 + 100, Config.maxHeight * 0.3,
+                CommonResources.TEXT_BUBBLE);
+            background.anchor.set(1, 0);
+            this.feedbackGroup.addChild(background);
+
+            var subMessage = this.game.make.text(
+                -1 * background.width / 2,
+                200,
+                "Click to continue",
+                { font: "30px Roboto", fill: "#212121" });
+            subMessage.anchor.set(0.5);
+            background.addChild(subMessage);
 
             if (event.Text) {
-                var text = this.game.add.text(350, 50, event.Text, { font: "15px Roboto", fill: "#ffffff" }, group);
+                var text = this.game.make.text(
+                    -1 * background.width / 2,
+                    event.ImageUrl ? 60 : 100,
+                    event.Text,
+                    { font: "40px Roboto", fill: "#212121" });
                 text.anchor.set(0.5, 0.5);
-                text.inputEnabled = true;
+                background.addChild(text);
             }
 
             if (event.ImageUrl) {
-                var posX = Config.maxWidth / 2;
-                var posY = Config.maxHeight / 2;
-
-                var image = this.game.add.sprite(posX, posY, event.ImageUrl, null, group);
-                var scale = Config.maxWidth / image.width * 0.75;
-
-                image.anchor.set(0.5, 0.5);
-                image.scale.setTo(scale, scale);
-                image.inputEnabled = true;
+                var image = this.game.make.sprite(
+                    -1 * background.width / 2,
+                    135,
+                    event.ImageUrl
+                );
+                var scale = 100 / image.height;
+                image.anchor.set(0.5);
+                image.scale.setTo(scale);
+                background.addChild(image);
+                subMessage.y += 10;
             }
 
             var removeFeedback = () => {
                 this.unpause();
-                this.game.add.tween(group).to( { alpha: 0, width: 0, height: 0 }, 500, "Linear", true)
-                    .onComplete.add(() => this.feedbackGroup.remove(group), this);
+                this.game.add.tween(background).to( { alpha: 0, width: 0, height: 0 }, 500, "Linear", true)
+                    .onComplete.add(() => this.feedbackGroup.remove(background), this);
             };
 
-            var w = group.width;
-            var h = group.height;
+            var w = background.width;
+            var h = background.height;
 
-            group.alpha = 0.1;
-            group.width = group.height = 0;
+            background.alpha = 0.1;
+            background.width = background.height = 0;
 
-            this.game.add.tween(group).to( {
+            this.game.add.tween(background).to( {
                 alpha: 1,
                 width: w,
                 height: h
             } , 500, "Cubic", true);
             this.pause();
 
-            group.onChildInputDown.add(() => removeFeedback());
+            background.inputEnabled = true;
+            background.events.onInputDown.add(() => removeFeedback());
             this.raiseChangedEvent(GameEventType.FeedbackPlayed, event);
         };
     }

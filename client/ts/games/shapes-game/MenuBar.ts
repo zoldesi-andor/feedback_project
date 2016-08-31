@@ -6,6 +6,7 @@ import GameEventType = require("../GameEventType");
 import GameModel = require("../GameModel");
 
 import Config from "./Config";
+import CommonResources from "../CommonResources";
 
 class MenuBar {
 
@@ -16,6 +17,7 @@ class MenuBar {
     private remainingTime: Phaser.Text;
 
     private targetIndicator: Shape;
+    private robot: Phaser.Sprite;
 
     constructor(gameModel: Model.IShapeGameModel, game: Phaser.Game) {
         this.gameModel = gameModel;
@@ -36,16 +38,34 @@ class MenuBar {
         this.createTargetIndicator(true);
 
         // Creating Score indicator        
-        this.scoreSprite = this.game.make.text(700, 75, "Score: 0", { font: "20px Roboto", fill: "#ffffff" });
+        this.scoreSprite = this.game.make.text(
+            this.sprite.width / 2,
+            70,
+            "Score: 0",
+            { font: "20px Roboto", fill: "#ffffff" });
         this.scoreSprite.anchor.set(0.5, 0.5);
         this.sprite.addChild(this.scoreSprite);
 
         // Creating Score indicator        
-        this.remainingTime = this.game.make.text(700, 25, "", { font: "20px Roboto", fill: "#ffffff" });
+        this.remainingTime = this.game.make.text(
+            this.sprite.width / 2,
+            30,
+            "",
+            { font: "20px Roboto", fill: "#ffffff" });
         this.remainingTime.anchor.set(0.5, 0.5);
         this.sprite.addChild(this.remainingTime);
 
-        this.sprite.height = 0;
+        this.robot = this.game.make.sprite(
+            this.sprite.width - 80,
+            this.sprite.height / 2,
+            CommonResources.ROBOT
+        );
+        this.robot.scale.setTo(this.sprite.height * 0.9 / this.robot.height);
+        this.robot.height = 0; // Updated by tween
+        this.robot.anchor.setTo(0.5);
+        this.sprite.addChild(this.robot);
+
+        this.sprite.height = 0; // Updated by tween
 
         this.gameModel.addChangeListener((event) => {
             this.checkForTargetChange();
@@ -55,7 +75,10 @@ class MenuBar {
     }
 
     public show(): void {
-        this.game.add.tween(this.sprite).to({ height: Config.height }, 500, "Cubic", true);
+        var showMenu = this.game.add.tween(this.sprite).to({ height: Config.height }, 500, "Cubic", true);
+        var showRobot = this.game.add.tween(this.robot).to({height: Config.height * 0.8}, 500, "Cubic");
+
+        showMenu.chain(showRobot);
     }
 
     public hide(): void {

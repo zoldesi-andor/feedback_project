@@ -29,8 +29,6 @@ class StartPopup {
             CommonResources.TEXT_BUBBLE,
             null );
         this.background.anchor.set(1);
-        //this.background.height = height;
-        // this.background.width = width;
         this.background.bringToTop();
 
         var subMessage = this.game.make.text(

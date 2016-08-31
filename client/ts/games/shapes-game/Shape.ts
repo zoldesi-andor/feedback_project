@@ -28,6 +28,7 @@ class Shape extends Phaser.Sprite {
         return <Phaser.Physics.Arcade.Body>this.body;
     }
 
+    /** Loads the necessary resources (e.g. images, sprites etc.) */
     public static loadResources(game: Phaser.Game): void {
         game.load.atlas("shapes", "images/shapes.png", "images/shapes.json");
     }

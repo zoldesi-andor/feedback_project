@@ -1,5 +1,6 @@
 import * as FeedbackModel from "./feedback/FeedbackModel";
 import GameEventType = require("./GameEventType");
+import GameState = require("./GameState");
 
 /** Interface for Game Events */
 export interface IGameEvent {
@@ -19,6 +20,9 @@ export interface IGameModel {
 
     /** Returns the current score */
     getScore():number;
+
+    /** Returns the current game state (e.g. Running, Paused, ...) */
+    getState(): GameState;
 
     /** Returns the remaining time */
     getRemainingTime():number;

@@ -7,6 +7,7 @@ import Model = require("Model");
 import GameEventType = require("../GameEventType");
 import GameModel = require("../GameModel");
 import State = require("../GameState");
+import CommonResources from "../CommonResources";
 
 import ExperimentConfig = require("ExperimentConfig");
 
@@ -23,6 +24,7 @@ import FeedbackPlayer from "../feedback/FeedbackPlayer";
 import {IFeedbackEvent} from "../feedback/FeedbackModel";
 
 import Config from "./Config";
+import GameState = require("../GameState");
 
 var result = DataAccess.load();
 
@@ -33,6 +35,7 @@ if(!result) {
 class MainState extends Phaser.State implements Model.IShapeGameModel, IResultExtender {
     private state: State;
 
+    private feedbackGroup: Phaser.Group;
     private shapesGroup: Phaser.Group;
     private targetShapeType: ShapeType;
     private warpInArea: WarpInArea;
@@ -48,7 +51,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
 
     private gameEvents: Array<IGameEvent> = [];
 
-    /** Phazer init life cycle callback */
+    /** Phaser init life cycle callback */
     public init(): void {
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         this.scale.pageAlignHorizontally = true;
@@ -57,15 +60,18 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
         this.feedbackPlayer = new FeedbackPlayer(this.game, this, ExperimentConfig);
     }
 
-    /** Phazer preload life cycle callback */
+    /** Phaser preload life cycle callback */
     public preload(): void {
         Shape.loadResources(this.game);
         this.feedbackPlayer.preload();
+        CommonResources.loadResources(this.game);
     }
 
-    /** Phazer create life cycle callback */
+    /** Phaser create life cycle callback */
     public create(): void {
         this.state = State.Starting;
+
+
 
         this.physics.startSystem(Phaser.Physics.ARCADE);
         this.stage.backgroundColor = "#FFFFFF";
@@ -73,13 +79,15 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
 
         this.targetShapeType = this.getRandomTargetShapeType();
 
+        this.feedbackGroup = this.add.group();
+
         this.menuBar = new MenuBar(this, this.game);
         this.warpInArea = new WarpInArea(this, this.game);
 
         new StartPopUp(this.game, () => this.start(), this.feedbackPlayer.getStartFeedback());
     }
 
-    /** Phazer update callback */
+    /** Phaser update callback */
     public update(): void {
         if (this.state === State.Running) {
             this.physics.arcade.collide(this.shapesGroup, undefined);
@@ -192,29 +200,68 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
     /** Creates a callback function which can be used to display a feedback. */
     public createShowFeedbackFunction(event:IFeedbackEvent):()=>void {
         return () => {
-            var group = this.game.add.group();
+
+            var background = this.game.add.sprite(
+                Config.maxWidth * 0.9, Config.height + 20,
+                CommonResources.TEXT_BUBBLE_DOWN);
+            background.anchor.set(1, 0);
+            this.feedbackGroup.addChild(background);
+
+            var horisontalOffset = -1 * background.width / 2 - 35;
+            var verticalOffset = 70;
+
+            var subMessage = this.game.make.text(
+                horisontalOffset,
+                180 + verticalOffset,
+                "Click to continue",
+                { font: "30px Roboto", fill: "#212121" });
+            subMessage.anchor.set(0.5);
+            background.addChild(subMessage);
 
             if (event.Text) {
-                this.game.add.text(350, 50, event.Text, { font: "15px Roboto", fill: "#ffffff" }, group)
-                    .anchor.set(0.5, 0.5);
+                var text = this.game.make.text(
+                    horisontalOffset,
+                    verticalOffset + event.ImageUrl ? 120 : 150,
+                    event.Text.replace("$score", this.getScore().toString()),
+                    { font: "40px Roboto", fill: "#212121" });
+                text.anchor.set(0.5, 0.5);
+                background.addChild(text);
             }
 
             if (event.ImageUrl) {
-                var image = this.game.add.sprite(450, 50, event.ImageUrl, null, group);
-                var scale = 100 / image.width;
-                image.anchor.set(0.5, 0.5);
-                image.scale.setTo(scale, scale);
+                var image = this.game.make.sprite(
+                    horisontalOffset,
+                    135 + verticalOffset,
+                    event.ImageUrl
+                );
+                var scale = 100 / image.height;
+                image.anchor.set(0.5);
+                image.scale.setTo(scale);
+                background.addChild(image);
+                subMessage.y += 30;
             }
 
             var removeFeedback = () => {
-                this.game.add.tween(group).to( { alpha: 0 }, 500, "Linear", true)
-                    .onComplete.add(() => this.game.world.remove(group), this);
+                this.unpause();
+                this.game.add.tween(background).to( { alpha: 0, width: 0, height: 0 }, 500, "Linear", true)
+                    .onComplete.add(() => this.feedbackGroup.remove(background), this);
             };
 
-            group.alpha = 0.1;
-            this.game.add.tween(group).to( { alpha: 1 }, 500, "Linear", true);
+            var w = background.width;
+            var h = background.height;
 
-            this.game.time.events.add(Phaser.Timer.SECOND * 5, removeFeedback);
+            background.alpha = 0.1;
+            background.width = background.height = 0;
+
+            this.game.add.tween(background).to( {
+                alpha: 1,
+                width: w,
+                height: h
+            } , 500, "Cubic", true);
+            this.pause();
+
+            background.inputEnabled = true;
+            background.events.onInputDown.add(() => removeFeedback());
             this.raiseChangedEvent(GameEventType.FeedbackPlayed, event);
         };
     }
@@ -239,8 +286,10 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
         this.gameTimer = this.game.time.events.loop(
             1000,
             () => {
-                this.remainingTime = this.remainingTime - 1;
-                this.raiseChangedEvent(GameEventType.TimerTick);
+                if(this.state === GameState.Running) {
+                    this.remainingTime = this.remainingTime - 1;
+                    this.raiseChangedEvent(GameEventType.TimerTick);
+                }
             });
         this.game.time.events.add(
             Config.gameDuration * 1000,
@@ -271,6 +320,16 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
         this.menuBar.reset();
 
         this.start();
+    }
+
+    private pause(): void {
+        this.state = GameState.Paused;
+        (<any>this.game.physics.arcade).isPaused = true;
+    }
+
+    private unpause(): void {
+        this.state = GameState.Running;
+        (<any>this.game.physics.arcade).isPaused = false;
     }
 }
 

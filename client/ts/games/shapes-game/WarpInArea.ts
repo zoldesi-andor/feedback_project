@@ -3,6 +3,8 @@ import Shape = require("Shape");
 import Model = require("Model");
 import GameState = require("../GameState");
 
+import Config from "./Config";
+
 function min(x1: number, x2: number): number {
     return x1 < x2 ? x1 : x2;
 }

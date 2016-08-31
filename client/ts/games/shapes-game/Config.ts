@@ -13,4 +13,7 @@ export default class Config {
 
     /** The max width of the window */
     public static maxWidth = 800;
+
+    /** The maximal number of total shapes */
+    public static maxShapeCount = 30;
 }

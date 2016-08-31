@@ -1,10 +1,12 @@
 import Config from "./shapes-game/Config";
 import {IFeedbackEvent} from "./feedback/FeedbackModel";
+import CommonResources from "./CommonResources";
 
 class StartPopup {
 
     private game: Phaser.Game;
     private background: Phaser.Sprite;
+    private robot: Phaser.Sprite;
 
     private closeHandler: () => void;
 
@@ -12,42 +14,52 @@ class StartPopup {
         this.game = game;
         this.closeHandler = onClose;
 
-        var height = Config.maxHeight * 0.8;
+        var height = Config.maxHeight * 0.5;
         var width = Config.maxWidth * 0.8;
 
-        var bmd = this.game.add.bitmapData(width, height);
-        bmd.ctx.beginPath();
-        bmd.ctx.rect(0, 0, width, height);
-        bmd.ctx.fillStyle = '#DDDDDD';
-        bmd.ctx.fill();
+        this.robot = this.game.add.sprite(
+            Config.maxWidth * 0.7 + 120, Config.maxHeight * 0.7 + 115,
+            CommonResources.ROBOT,
+            null
+        );
+        this.robot.anchor.set(0.5);
 
         this.background = this.game.add.sprite(
-            Config.maxWidth / 2, Config.maxHeight / 2,
-            bmd);
-        this.background.anchor.set(0.5, 0.5);
+            Config.maxWidth * 0.7 + 100, Config.maxHeight * 0.7,
+            CommonResources.TEXT_BUBBLE,
+            null );
+        this.background.anchor.set(1);
+        //this.background.height = height;
+        // this.background.width = width;
         this.background.bringToTop();
 
-        var message1 = this.game.make.text(
-            0,
-            -200,//-1 * (height * 0.15),
-            "Are you ready?",
-            { font: "50px Roboto", fill: "#212121" });
-        message1.anchor.set(0.5);
-        this.background.addChild(message1);
+        var subMessage = this.game.make.text(
+            -1 * this.background.width / 2,
+            -150,
+            "Click to start",
+            { font: "30px Roboto", fill: "#212121" });
+        subMessage.anchor.set(0.5);
+        this.background.addChild(subMessage);
 
         if(feedback) {
             if (feedback.ImageUrl) {
-                var image = this.game.make.sprite(0, -50, feedback.ImageUrl, null);
-                var scale = 100 / image.width
-                image.anchor.set(0.5, 0.5);
-                image.scale.setTo(scale, scale);
+                var image = this.game.make.sprite(
+                    -1 * this.background.width / 2,
+                    -215,
+                    feedback.ImageUrl
+                );
+                var scale = 100 / image.height;
+                image.anchor.set(0.5);
+                image.scale.setTo(scale);
                 this.background.addChild(image);
+
+                subMessage.y += 10;
             }
 
             if (feedback.Text) {
                 var text = this.game.make.text(
-                    0,
-                    50,
+                    -1 * this.background.width / 2,
+                    feedback.ImageUrl ? -290 : -250,
                     feedback.Text,
                     { font: "40px Roboto", fill: "#212121" });
                 text.anchor.set(0.5, 0.5);
@@ -55,29 +67,35 @@ class StartPopup {
             }
         }
 
-        var message2 = this.game.make.text(
-            0,
-            200,//(height * 0.15),
-            "Click to start",
-            { font: "30px Roboto", fill: "#212121" });
-        message2.anchor.set(0.5);
-        this.background.addChild(message2);
-
         this.background.inputEnabled = true;
         this.background.events.onInputDown.add(() => this.Close());
+    }
+
+    /** Loads the necessary resources (e.g. images, sprites etc.) */
+    public static loadResources(game: Phaser.Game): void {
+        game.load.atlas("shapes", "images/shapes.png", "images/shapes.json");
     }
 
     /**
      * Closes the popup.
      */
     public Close(): void {
-        this.game.add.tween(this.background).to({ width: 0, height: 0 }, 500, "Cubic", true)
+        var shrinkBackground = this.game.add.tween(this.background).to({ width: 0, height: 0 }, 500, "Cubic");
+        var shrinkRobot = this.game.add.tween(this.robot).to({ width: 0, height: 0}, 500, "Cubic");
+
+        shrinkBackground.chain(shrinkRobot);
+
+        shrinkRobot
             .onComplete.add(
             () => {
                 this.background.kill();
+                this.robot.kill();
+                this.game.world.remove(this.robot);
                 this.game.world.remove(this.background);
                 this.closeHandler();
-            }, this)
+            }, this);
+
+        shrinkBackground.start();
     }
 }
 

@@ -7,6 +7,7 @@ import Model = require("Model");
 import GameEventType = require("../GameEventType");
 import GameModel = require("../GameModel");
 import State = require("../GameState");
+import CommonResources from "../CommonResources";
 
 import ExperimentConfig = require("ExperimentConfig");
 
@@ -63,6 +64,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
     public preload(): void {
         Shape.loadResources(this.game);
         this.feedbackPlayer.preload();
+        CommonResources.loadResources(this.game);
     }
 
     /** Phazer create life cycle callback */

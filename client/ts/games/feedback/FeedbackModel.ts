@@ -9,8 +9,8 @@ export interface IFeedbackTrigger {
 
 export interface IFeedbackEvent {
     Trigger:IFeedbackTrigger;
-    Text:string;
-    ImageUrl:string;
+    Text?:string;
+    ImageUrl?:string;
 }
 
 export interface IFeedbackOption {

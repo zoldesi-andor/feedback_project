@@ -26,7 +26,7 @@ class StartPopup {
 
         this.background = this.game.add.sprite(
             Config.maxWidth * 0.7 + 100, Config.maxHeight * 0.7,
-            CommonResources.TEXT_BUBBLE,
+            CommonResources.TEXT_BUBBLE_UP,
             null );
         this.background.anchor.set(1);
         this.background.bringToTop();

@@ -53,13 +53,13 @@ var config: Model.IExperiment = {
                     ImageUrl: "images/feedback/clover.png"
                 },
                 { 
-                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, NumberOfEvents: 1, IsReoccurring: true},
+                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, NumberOfEvents: 20, IsReoccurring: true},
                     Text: "You can do it!",
                     ImageUrl: "images/feedback/fingerscrossed.png"
                 },
                 {
                     Trigger: { TriggerType: FeedbackTriggerType.End },
-                    ImageUrl: "winking_encouragement.jpg"
+                    ImageUrl: "images/feedback/winking_encouragement.jpg"
                 }
             ]
         }

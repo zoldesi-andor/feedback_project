@@ -202,14 +202,17 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
         return () => {
 
             var background = this.game.add.sprite(
-                Config.maxWidth * 0.7 + 100, Config.maxHeight * 0.3,
-                CommonResources.TEXT_BUBBLE);
+                Config.maxWidth * 0.9, Config.height + 20,
+                CommonResources.TEXT_BUBBLE_DOWN);
             background.anchor.set(1, 0);
             this.feedbackGroup.addChild(background);
 
+            var horisontalOffset = -1 * background.width / 2 - 35;
+            var verticalOffset = 70;
+
             var subMessage = this.game.make.text(
-                -1 * background.width / 2,
-                200,
+                horisontalOffset,
+                180 + verticalOffset,
                 "Click to continue",
                 { font: "30px Roboto", fill: "#212121" });
             subMessage.anchor.set(0.5);
@@ -217,9 +220,9 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
 
             if (event.Text) {
                 var text = this.game.make.text(
-                    -1 * background.width / 2,
-                    event.ImageUrl ? 60 : 100,
-                    event.Text,
+                    horisontalOffset,
+                    verticalOffset + event.ImageUrl ? 120 : 150,
+                    event.Text.replace("$score", this.getScore().toString()),
                     { font: "40px Roboto", fill: "#212121" });
                 text.anchor.set(0.5, 0.5);
                 background.addChild(text);
@@ -227,15 +230,15 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
 
             if (event.ImageUrl) {
                 var image = this.game.make.sprite(
-                    -1 * background.width / 2,
-                    135,
+                    horisontalOffset,
+                    135 + verticalOffset,
                     event.ImageUrl
                 );
                 var scale = 100 / image.height;
                 image.anchor.set(0.5);
                 image.scale.setTo(scale);
                 background.addChild(image);
-                subMessage.y += 10;
+                subMessage.y += 30;
             }
 
             var removeFeedback = () => {

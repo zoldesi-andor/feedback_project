@@ -193,7 +193,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
             Score: this.getScore()
         };
 
-        if(event.EventType !== GameEventType.TimerTick || this.tickCounter === Config.timerTickCaptureInterval) {
+        if(event.EventType !== GameEventType.TimerTick) {
             this.saveEvent(event);
         } else {
             this.tickCounter++;

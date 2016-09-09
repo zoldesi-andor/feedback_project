@@ -1,6 +1,6 @@
 export default class Config {
     /** The game duration */
-    public static gameDuration = 5; // 10 sec
+    public static gameDuration = 120; // 10 sec
 
     /**
      * To avoid spamming the result object with every timer tick event

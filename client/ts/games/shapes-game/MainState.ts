@@ -17,22 +17,21 @@ import IGameEvent = GameModel.IGameEvent;
 import NavigationManager = require("../../common/NavigationManager");
 
 import DataAccess from "../../common/DataAccess";
-import {IResultExtender} from "../../common/IResultExtender";
-import {Result} from "../../common/Result";
 
 import FeedbackPlayer from "../feedback/FeedbackPlayer";
 import {IFeedbackEvent} from "../feedback/FeedbackModel";
 
 import Config from "./Config";
 import GameState = require("../GameState");
+import {GameInfo} from "../../common/GameInfo";
 
-var result = DataAccess.load();
+var result = DataAccess.loadGameInfo();
 
-if(!result) {
+if(!result || !result.NickName) {
     NavigationManager.QuestionnairePage.go();
 }
 
-class MainState extends Phaser.State implements Model.IShapeGameModel, IResultExtender {
+class MainState extends Phaser.State implements Model.IShapeGameModel {
     private state: State;
 
     private feedbackGroup: Phaser.Group;
@@ -48,7 +47,9 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
 
     private score = 0;
     private remainingTime = 0;
+    private tickCounter = 0;
 
+    private gameEventSequence = 0;
     private gameEvents: Array<IGameEvent> = [];
 
     /** Phaser init life cycle callback */
@@ -100,22 +101,23 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
     }
 
     /** Generates part of the game result. */
-    public extend(result:Result):Result {
-        result.GameInfo = {
-            Events: this.gameEvents,
+    public extend(result: GameInfo): GameInfo {
+        /*result.GameInfo = {
+            ExperimentName: ExperimentConfig.ExperimentName,
+            FeedbackOption: this.feedbackPlayer.getCurrentFeedbackOption(),
             Score: this.getScore()
-        };
+        };*/
 
         return result;
     }
 
     /** Adds a listener which is called on model changes. */
-    public addChangeListener(func: () => void): void {
+    public addChangeListener(func: (event:IGameEvent) => void): void {
         this.changeListeners.push(func);
     }
 
     /** Removes a change listener */
-    public removeChangeListener(func: () => void): void {
+    public removeChangeListener(func: (event:IGameEvent) => void): void {
         this.changeListeners = this.changeListeners.filter(l => l !== func);
     }
 
@@ -184,14 +186,22 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
     /** Raises a change event calling all the change listeners */
     protected raiseChangedEvent(eventType: GameEventType, data?: any): void {
         var event: IGameEvent = {
+            Sequence: this.gameEventSequence ++,
             Data: data,
             EventType: eventType,
             Time: new Date().getTime(),
             Score: this.getScore()
         };
 
-        if(event.EventType !== GameEventType.TimerTick) {
-            this.gameEvents.push(event);
+        if(event.EventType !== GameEventType.TimerTick || this.tickCounter === Config.timerTickCaptureInterval) {
+            this.saveEvent(event);
+        } else {
+            this.tickCounter++;
+
+            if(this.tickCounter > Config.timerTickCaptureInterval) {
+                this.tickCounter = 0;
+                this.saveEvent(event);
+            }
         }
 
         this.changeListeners.forEach(l => l(event));
@@ -207,11 +217,11 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
             background.anchor.set(1, 0);
             this.feedbackGroup.addChild(background);
 
-            var horisontalOffset = -1 * background.width / 2 - 35;
+            var horizontalOffset = -1 * background.width / 2 - 35;
             var verticalOffset = 70;
 
             var subMessage = this.game.make.text(
-                horisontalOffset,
+                horizontalOffset,
                 180 + verticalOffset,
                 "Click to continue",
                 { font: "30px Roboto", fill: "#212121" });
@@ -220,7 +230,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
 
             if (event.Text) {
                 var text = this.game.make.text(
-                    horisontalOffset,
+                    horizontalOffset,
                     verticalOffset + event.ImageUrl ? 120 : 150,
                     event.Text.replace("$score", this.getScore().toString()),
                     { font: "40px Roboto", fill: "#212121" });
@@ -230,7 +240,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
 
             if (event.ImageUrl) {
                 var image = this.game.make.sprite(
-                    horisontalOffset,
+                    horizontalOffset,
                     135 + verticalOffset,
                     event.ImageUrl
                 );
@@ -276,7 +286,29 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
         return <ShapeType>this.rnd.integerInRange(0, Object.keys(ShapeType).length / 2 - 1);
     }
 
+    private saveEvent(event: IGameEvent): void {
+        if(result.Id === 0 || result.Id) {
+            // Game Id has arrived. Flushing saved events and/or sending event.
+            if(this.gameEvents.length > 0) {
+                this.gameEvents.push(event);
+                DataAccess.sendGameEvents(result.Id, this.gameEvents);
+                this.gameEvents.length = 0;
+            } else {
+                DataAccess.sendGameEvent(result.Id, event);
+            }
+        } else {
+            // Game Id has not yet arrived. Saving event in an array.
+            this.gameEvents.push(event);
+        }
+    }
+
     private start(): void {
+
+        result.ExperimentName = ExperimentConfig.ExperimentName;
+        result.FeedbackOption = this.feedbackPlayer.getCurrentFeedbackOption();
+        result.FeedbackOptionName = result.FeedbackOption.Name;
+        DataAccess.sendGameInfo(result).then(data => result.Id = data.gameId);
+
         this.warpInArea.start();
         this.feedbackPlayer.start();
         this.menuBar.show();
@@ -291,13 +323,13 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
                     this.raiseChangedEvent(GameEventType.TimerTick);
                 }
             });
-        this.game.time.events.add(
-            Config.gameDuration * 1000,
-            () => {
+
+        this.addChangeListener((e: IGameEvent) => {
+            if(e.EventType === GameEventType.TimerTick && this.remainingTime <= 0) {
                 this.stop();
                 new GameOverPopUp(this.game, this, () => this.reset(), this.feedbackPlayer.getEndFeedback());
-            },
-            this);
+            }
+        });
     }
 
     private stop(): void {
@@ -308,7 +340,15 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
         this.game.time.events.remove(this.gameTimer);
 
         this.extend(result);
-        DataAccess.send(result);
+        DataAccess.sendGameEvent(
+            1,
+            {
+                EventType: GameEventType.GameOver,
+                Score: this.getScore(),
+                Sequence: this.gameEventSequence ++,
+                Time: new Date().getTime()
+            }
+        );
     }
 
     private reset(): void {
@@ -318,6 +358,9 @@ class MainState extends Phaser.State implements Model.IShapeGameModel, IResultEx
         this.gameEvents = [];
 
         this.menuBar.reset();
+
+        result.Id = null;
+        result.HasClickedPlayAgain = true;
 
         this.start();
     }

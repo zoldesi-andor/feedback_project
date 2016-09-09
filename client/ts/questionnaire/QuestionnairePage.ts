@@ -20,23 +20,7 @@ requirejs(
             "Have you played this game before?": [["Yes", "yes"], ["No", "no"]]
 		};
 
-		var questionIndex = 0;
-		var answerIndex = 0;
-		var questions: Array<Question> = $.map(config, (prop, key) => {
-			var question = <Question>{};
-			question.Id = questionIndex++;
-			question.Text = key;
-			question.Options = prop.map(props => {
-				var answer = <Option>{};
-				answer.Id = answerIndex++;
-				answer.Text = props[0];
-				answer.CssClass = props[1];
-				return answer;
-			})
-			return question;
-		});
-
-		var questionnaireViewModel = new QuestionnaireViewModel(questions);
+		var questionnaireViewModel = new QuestionnaireViewModel();
 
 		ko.applyBindings(questionnaireViewModel);
 	}

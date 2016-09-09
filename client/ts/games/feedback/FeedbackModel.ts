@@ -19,5 +19,6 @@ export interface IFeedbackOption {
 }
 
 export interface IExperiment {
+    ExperimentName: string;
     FeedbackOptions:Array<IFeedbackOption>;
 }

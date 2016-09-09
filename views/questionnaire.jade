@@ -1,21 +1,55 @@
 extends text-content
 
 block main-text
-    h1 Please answer the following questions!
+    form(data-bind='submit: submit')
 
-    div(data-bind='foreach: Questions')
-        h4(data-bind='text: Text')
-        .dropdown
-            button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
-                span(data-bind="html: (SelectedOption || { Text: 'Please Select...'}).Text")
-                span.carret
-            ul.dropdown-menu
-                <!-- ko foreach: Options -->
-                li(data-bind='css: { active: IsSelected() }')
-                    a(data-bind='html: Text, css: CssClass, click: select')
-                <!-- /ko -->
+        h1 Please answer the following questions!
+
+        div
+            h4 Whats your name / nick name?
+            input.form-control(type="text", data-bind="{value: nickName}")
+
+        div
+            h4 How old are you?
+            input.form-control(type="number", data-bind="{value: age}")
+
+        div
+            h4 Gender
+            select.form-control(data-bind="{value: gender}")
+                option(value="") Please select
+                option Male
+                option Female
+
+        div
+            h4 Where are you from?
+            select.form-control(data-bind="options: countries, " +
+                                            "value: country, " +
+                                            "optionsCaption: 'Please select', " +
+                                            "optionsText: 'n', " +
+                                            "optionsValue: 'i'")
+
+        div
+            h4 Are you playing often video games?
+            select.form-control(data-bind="{value: isPlayingOften}")
+                option(value="") Please select
+                option(value=1) Yes
+                option(value=0) No
+
+        div
+            h4 Are you good at playing video games?
+            select.form-control(data-bind="{value: isGoodAtGames}")
+                option(value="") Please select
+                option(value=1) Yes
+                option(value=0) No
+
+        div
+            h4 Have you played this game before?
+            select.form-control(data-bind="{value: hasPlayedBefore}")
+                option(value="") Please select
+                option(value=1) Yes
+                option(value=0) No
     
-    button.btn.btn-primary.space-above(data-bind='click: submit') Submit
+        button.btn.btn-primary.space-above(type="submit", data-bind="enable: isValid") Submit
 
 block scripts
     script(data-main='ts/questionnaire/QuestionnairePage.js', src='lib/requirejs/require.js')

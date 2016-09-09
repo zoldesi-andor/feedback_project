@@ -2,6 +2,7 @@ import FeedbackTriggerType = require("../feedback/FeedbackTriggerType");
 import Model = require("../feedback/FeedbackModel");
 
 var config: Model.IExperiment = {
+    ExperimentName: "Here Comes The Experiment Name",
     FeedbackOptions: [
         {
             Name: "No feedback",

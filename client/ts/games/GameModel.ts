@@ -4,6 +4,7 @@ import GameState = require("./GameState");
 
 /** Interface for Game Events */
 export interface IGameEvent {
+    Sequence: number;
     Data?:any;
     EventType:GameEventType;
     Time:number;

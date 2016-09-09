@@ -1,85 +1,85 @@
-import QuestionViewModel = require('QuestionViewModel');
 import NavigationManager = require('../common/NavigationManager');
-import ResultExtenderBase = require("../common/ResultExtenderBase");
-import {Result} from "../common/Result";
-import {IResultExtender} from "../common/IResultExtender";
 import DataAccess from "../common/DataAccess";
+import Countries from "./countries";
+import {GameInfo} from "../common/GameInfo";
 
 /** View model for a questionnaire */
-class QuestionnaireViewModel extends ResultExtenderBase {
+class QuestionnaireViewModel {
 
-	public Questions: Array<QuestionViewModel>;
-	
-	private resultExtenders: Array<IResultExtender>;
+	public nickName: KnockoutObservable<string>;
+	public age: KnockoutObservable<number>;
+	public gender: KnockoutObservable<string>;
+	public country: KnockoutObservable<string>;
 
-	constructor(questions: Array<Question>) {
-		super();
-		this.Questions = questions.map(question => new QuestionViewModel(question, this));
-		this.resultExtenders = [
-			new TimeStampExtender(),
-			new IpAndLocationExtender(),
-			this
-		];
+	public isPlayingOften: KnockoutObservable<boolean>;
+	public isGoodAtGames: KnockoutObservable<boolean>;
+
+	public hasPlayedBefore: KnockoutObservable<boolean>;
+
+    public isValid: KnockoutComputed<boolean>;
+
+	public countries: KnockoutObservableArray<any>;
+
+	private extenders: Array<IExtender<GameInfo>>;
+
+	constructor() {
+	    var gameInfo = DataAccess.loadGameInfo() || <GameInfo>{};
+
+		this.nickName = ko.observable<string>(gameInfo.NickName);
+		this.age = ko.observable<number>(gameInfo.Age);
+		this.gender = ko.observable<string>(gameInfo.Gender);
+		this.country = ko.observable<string>(gameInfo.Country);
+		this.isPlayingOften = ko.observable<boolean>(gameInfo.IsPlayingOften);
+		this.isGoodAtGames = ko.observable<boolean>(gameInfo.IsGoodAtGames);
+		this.hasPlayedBefore = ko.observable<boolean>(gameInfo.HasPlayedBefore);
+
+		this.countries = ko.observableArray<any>(Countries);
+
+        this.isValid = ko.computed<boolean>(() =>
+            this.nickName() !== "" &&
+            this.age() > 0 &&
+            this.gender() !== "" &&
+            this.country() !== "" &&
+            this.isPlayingOften() &&
+            this.isGoodAtGames() &&
+            this.hasPlayedBefore()
+        );
+
+		this.extenders = [
+			TimeStampExtender,
+			(result: GameInfo) => {
+
+				result.NickName = this.nickName();
+				result.Age = this.age();
+				result.Gender = this.gender();
+				result.Country = this.country();
+
+				result.IsGoodAtGames = this.isGoodAtGames();
+				result.IsPlayingOften = this.isPlayingOften();
+
+				result.HasPlayedBefore = this.hasPlayedBefore();
+
+				return result;
+			}
+		]
 	}
 
 	public submit(): void {
 	
-		var result: Result = null;
-		this.resultExtenders.forEach(extender => {
-			result = extender.extend(result);
+		let result: GameInfo = <GameInfo>{};
+		this.extenders.forEach(extender => {
+			result = extender(result);
 		});
-		
-		console.log(result);
-		DataAccess.store(result);
+
+		DataAccess.storeGameInfo(result);
         
         NavigationManager.GamePage.go();
 	}
-
-	public process(result: Result): Result {
-		result.UserInfo.QuestionnaireAnswers = this.getResults();
-
-		return result;
-	}
-
-	private getResults(): Array<Answer> {
-		return this.Questions.map(qvm => qvm.getResult());
-	}
 }
 
-class TimeStampExtender extends ResultExtenderBase {
-	process(result: Result): Result {
+let TimeStampExtender = (result: GameInfo) => {
 		result.TimeStamp = new Date().getTime();
 		return result;
-	}
-}
-
-class IpAndLocationExtender extends ResultExtenderBase {
-
-	private request: JQueryXHR;
-	private ip: string;
-	private countryName: string;
-	private countryCode: string;
-	private city: string;
-
-	constructor() {
-		super();
-
-		this.request = $.get("http://api.hostip.info/get_json.php", (data, status, resp) => {
-			this.ip = data.ip;
-			this.countryCode = data.country_code;
-			this.countryName = data.country_name;
-			this.city = data.city;
-		});
-	}
-
-	process(result: Result): Result {
-		this.request.done(() => {
-			result.UserInfo.Ip = this.ip;
-			result.UserInfo.Location = this.countryName;
-		});
-
-		return result;
-	}
-}
+};
 
 export = QuestionnaireViewModel;

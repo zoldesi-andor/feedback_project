@@ -52,6 +52,11 @@ export default class FeedbackPlayer {
         return this.currentFeedbackOption.FeedbackEvents.filter(e => e.Trigger.TriggerType === FeedbackTriggerType.End)[0];
     }
 
+    /** Gets the current feedback option */
+    public getCurrentFeedbackOption(): IFeedbackOption {
+        return this.currentFeedbackOption;
+    }
+
     private chooseFeedbackOption(): void {
         var index = this.game.rnd.integerInRange(0, this.experiment.FeedbackOptions.length - 1);
         this.currentFeedbackOption = this.experiment.FeedbackOptions[index];

@@ -27,9 +27,43 @@ router.get('/result', function (req, res, next) {
     res.attachment('results.csv');
     res.contentType('text/csv');
 
+    var headers = [
+        ["gameinfoid", "Game Id"],
+        ["timestamp", "Time Stamp"],
+        ["githash", "App Version"],
+        ["experimentname", "ExperimentName"],
+        ["feedbackoption", "Feedback Option"],
+        ["trackingtoken", "Tracking Token"],
+        ["hasclickedplayagain", "Has Clicked Play Again"],
+        ["hasplayedbefore", "Has Played Before"],
+        ["age", "Age"],
+        ["gender", "Gender"],
+        ["country", "Country"],
+        ["istouchscreen", "Is Touch Screen"],
+        ["nickname", "Nick Name"],
+        ["isplayingoften", "Is Playing Often"],
+        ["isgoodatgames", "Is Good at Games"],
+        ["score", "Score"],
+        ["sequence", "Event Sequence Number"],
+        ["data", "Extra Data"],
+        ["eventtype", "Event Type"],
+        ["time", "Time"]
+    ];
+
+    var firstLine = true;
     var transform = new stream.Transform({objectMode: true});
     transform._transform = function (chunk, encoding, callback) {
-        transform.push(chunk);
+        if(firstLine) {
+            firstLine = false;
+            transform.push(headers.map(function (item) {
+                return item[1];
+            }));
+        }
+
+        transform.push(headers.map(function (item) {
+            return chunk[item[0]];
+        }));
+
         callback();
     };
 

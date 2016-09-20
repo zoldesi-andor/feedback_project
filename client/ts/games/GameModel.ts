@@ -9,6 +9,8 @@ export interface IGameEvent {
     EventType:GameEventType;
     Time:number;
     Score:number;
+    SuccessCount: number;
+    MissCount: number;
 }
 
 /** General interface for game models */

@@ -48,6 +48,8 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
     private score = 0;
     private remainingTime = 0;
     private tickCounter = 0;
+    private successCounter = 0;
+    private missCounter = 0;
 
     private gameEventSequence = 0;
     private gameEvents: Array<IGameEvent> = [];
@@ -71,8 +73,6 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
     /** Phaser create life cycle callback */
     public create(): void {
         this.state = State.Starting;
-
-
 
         this.physics.startSystem(Phaser.Physics.ARCADE);
         this.stage.backgroundColor = "#FFFFFF";
@@ -152,8 +152,10 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
                     this.shapesGroup.remove(s);
                 }, this);
 
+                this.successCounter ++;
                 this.raiseChangedEvent(GameEventType.Success);
             } else {
+                this.missCounter ++;
                 this.raiseChangedEvent(GameEventType.Miss);
             }
         });
@@ -175,7 +177,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
      */
     public setTargetShapeType(t: ShapeType): void {
         this.targetShapeType = t;
-        this.raiseChangedEvent(GameEventType.Progress);
+        this.raiseChangedEvent(GameEventType.Progress, { TargetShape: t });
     }
 
     /** Gets the number of shapes on the game field matching the target shape type */
@@ -187,10 +189,12 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
     protected raiseChangedEvent(eventType: GameEventType, data?: any): void {
         var event: IGameEvent = {
             Sequence: this.gameEventSequence ++,
-            Data: data,
+            Data: data || { TargetShape: this.targetShapeType },
             EventType: eventType,
             Time: new Date().getTime(),
-            Score: this.getScore()
+            Score: this.getScore(),
+            SuccessCount: this.successCounter,
+            MissCount: this.missCounter
         };
 
         if(event.EventType !== GameEventType.TimerTick) {
@@ -346,7 +350,9 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
                 EventType: GameEventType.GameOver,
                 Score: this.getScore(),
                 Sequence: this.gameEventSequence ++,
-                Time: new Date().getTime()
+                Time: new Date().getTime(),
+                SuccessCount: this.successCounter,
+                MissCount: this.missCounter
             }
         );
     }

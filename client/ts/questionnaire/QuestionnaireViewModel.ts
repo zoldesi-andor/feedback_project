@@ -1,6 +1,7 @@
 import NavigationManager = require('../common/NavigationManager');
 import DataAccess from "../common/DataAccess";
 import Countries from "./countries";
+import UUIDGenerator from "../common/UUIDGenerator";
 import {GameInfo} from "../common/GameInfo";
 
 /** View model for a questionnaire */
@@ -47,6 +48,8 @@ class QuestionnaireViewModel {
 
 		this.extenders = [
 			TimeStampExtender,
+			IsTouchExtender,
+			TrackingTokenExtender,
 			(result: GameInfo) => {
 
 				result.NickName = this.nickName();
@@ -80,6 +83,18 @@ class QuestionnaireViewModel {
 let TimeStampExtender = (result: GameInfo) => {
 		result.TimeStamp = new Date().getTime();
 		return result;
+};
+
+let IsTouchExtender = (result: GameInfo) => {
+	result.IsTouchScreen = 'ontouchstart' in window;
+	return result;
+};
+
+let TrackingTokenExtender = (result: GameInfo) => {
+	var trackingToken = localStorage.getItem("tracking-token") || UUIDGenerator();
+	localStorage.setItem("tracking-token", trackingToken);
+	result.TrackingToken = trackingToken;
+	return result;
 };
 
 export = QuestionnaireViewModel;

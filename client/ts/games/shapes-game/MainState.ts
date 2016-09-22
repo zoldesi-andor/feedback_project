@@ -306,6 +306,18 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
         }
     }
 
+    public shakeItUp(): void {
+        this.getShapes().forEach(shape => {
+            this.game.physics.arcade.velocityFromAngle(
+                this.rnd.integerInRange(0, 360),
+                this.rnd.integerInRange(200, 300),
+                shape.getBody().velocity
+            );
+
+            shape.getBody().angularVelocity = this.rnd.integerInRange(-200,200);
+        });
+    }
+
     private start(): void {
 
         result.ExperimentName = ExperimentConfig.ExperimentName;
@@ -379,6 +391,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
     private unpause(): void {
         this.state = GameState.Running;
         (<any>this.game.physics.arcade).isPaused = false;
+        this.shakeItUp();
     }
 }
 

@@ -16,6 +16,7 @@ class Shape extends Phaser.Sprite {
             body.bounce.set(1);
             body.collideWorldBounds = true;
             body.drag.setTo(30, 30);
+            body.angularDrag = 30;
         }
 
         this.scale.setTo(0.5, 0.5);

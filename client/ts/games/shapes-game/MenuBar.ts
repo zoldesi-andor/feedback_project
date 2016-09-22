@@ -19,6 +19,8 @@ class MenuBar {
     private targetIndicator: Shape;
     private robot: Phaser.Sprite;
 
+    private changingTarget: boolean = false;
+
     constructor(gameModel: Model.IShapeGameModel, game: Phaser.Game) {
         this.gameModel = gameModel;
         this.game = game;
@@ -111,18 +113,22 @@ class MenuBar {
     }
 
     private checkForTargetChange(): void {
-        if (this.targetIndicator.shapeType === this.gameModel.getTargetShapeType()) {
+        if (this.targetIndicator.shapeType === this.gameModel.getTargetShapeType() || this.changingTarget) {
             return;
         }
+
+        this.changingTarget = true;
 
         this.game.add.tween(this.targetIndicator).to({ width: 0, height: 0 }, 500, "Cubic", true).onComplete.add(() => {
             this.targetIndicator.kill();
             this.sprite.removeChild(this.targetIndicator);
             this.createTargetIndicator();
+            this.changingTarget = false;
         }, this)
     }
 
     private createTargetIndicator(noTween?: boolean): void {
+
         this.targetIndicator = new Shape(this.gameModel.getTargetShapeType(), this.game, 50, 50, true);
         this.targetIndicator.tint = 0xFFFFFF;
 

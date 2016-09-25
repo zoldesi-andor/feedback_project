@@ -7,6 +7,7 @@ import GameModel = require("../GameModel");
 
 import Config from "./Config";
 import CommonResources from "../CommonResources";
+import GameState = require("../GameState");
 
 class MenuBar {
 
@@ -113,7 +114,9 @@ class MenuBar {
     }
 
     private checkForTargetChange(): void {
-        if (this.targetIndicator.shapeType === this.gameModel.getTargetShapeType() || this.changingTarget) {
+        if (this.targetIndicator.shapeType === this.gameModel.getTargetShapeType()
+            || this.changingTarget
+            || this.gameModel.getState() !== GameState.Running) {
             return;
         }
 

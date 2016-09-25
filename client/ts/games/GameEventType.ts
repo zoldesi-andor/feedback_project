@@ -5,7 +5,8 @@ enum GameEventType {
     Progress,
     TimerTick,
     FeedbackPlayed,
-    GameOver
+    GameOver,
+    Resume
 }
 
 export = GameEventType;

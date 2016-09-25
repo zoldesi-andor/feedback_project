@@ -94,7 +94,8 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
             this.physics.arcade.collide(this.shapesGroup, undefined);
             this.physics.arcade.collide(this.shapesGroup, this.menuBar.getSprite());
 
-            if (this.getShapes().length >= this.warpInArea.maxShapeCount - 1 && this.getTargetCount() === 0) {
+            if (this.getShapes().length >= this.warpInArea.maxShapeCount - 1
+                 && this.getTargetCount() === 0) {
                 this.setRandomTarget();
             }
         }
@@ -113,7 +114,8 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
 
     /** Adds a listener which is called on model changes. */
     public addChangeListener(func: (event:IGameEvent) => void): void {
-        this.changeListeners.push(func);
+        // appending to the beginning of the array to ensure proper ordering (Feedback should be evaluated first)
+        this.changeListeners = [func].concat(this.changeListeners);
     }
 
     /** Removes a change listener */
@@ -392,6 +394,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
         this.state = GameState.Running;
         (<any>this.game.physics.arcade).isPaused = false;
         this.shakeItUp();
+        this.raiseChangedEvent(GameEventType.Resume);
     }
 }
 

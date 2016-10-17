@@ -59,7 +59,7 @@ export default class FeedbackPlayer {
 
     private chooseFeedbackOption(): void {
         var index = this.game.rnd.integerInRange(0, this.experiment.FeedbackOptions.length - 1);
-        this.currentFeedbackOption = this.experiment.FeedbackOptions[3];
+        this.currentFeedbackOption = this.experiment.FeedbackOptions[index];
 
         if(console && console.log) {
             console.log(`Using feedback option: ${this.currentFeedbackOption.Name}`);

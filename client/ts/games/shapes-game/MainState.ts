@@ -50,6 +50,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
     private tickCounter = 0;
     private successCounter = 0;
     private missCounter = 0;
+    private targetsCompletedCounter = 0;
 
     private gameEventSequence = 0;
     private gameEvents: Array<IGameEvent> = [];
@@ -179,6 +180,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
      */
     public setTargetShapeType(t: ShapeType): void {
         this.targetShapeType = t;
+        this.targetsCompletedCounter ++;
         this.raiseChangedEvent(GameEventType.Progress, { TargetShape: t });
     }
 
@@ -238,7 +240,9 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
                 var text = this.game.make.text(
                     horizontalOffset,
                     verticalOffset + event.ImageUrl ? 120 : 150,
-                    event.Text.replace("$score", this.getScore().toString()),
+                    event.Text
+                        .replace("$score", this.getScore().toString())
+                        .replace("$targetCount", this.targetsCompletedCounter.toString()),
                     { font: "40px Roboto", fill: "#212121" });
                 text.anchor.set(0.5, 0.5);
                 background.addChild(text);

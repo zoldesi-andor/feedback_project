@@ -59,7 +59,7 @@ export default class FeedbackPlayer {
 
     private chooseFeedbackOption(): void {
         var index = this.game.rnd.integerInRange(0, this.experiment.FeedbackOptions.length - 1);
-        this.currentFeedbackOption = this.experiment.FeedbackOptions[index];
+        this.currentFeedbackOption = this.experiment.FeedbackOptions[3];
 
         if(console && console.log) {
             console.log(`Using feedback option: ${this.currentFeedbackOption.Name}`);
@@ -83,17 +83,8 @@ export default class FeedbackPlayer {
         });
     }
     
-    private createTimeBasedFeedback(event: IFeedbackEvent): void {
-        if (event.Trigger.IsReoccurring) {
-            var timer = this.game.time.events.loop(Phaser.Timer.SECOND * event.Trigger.SecondsToWait, this.gameModel.createShowFeedbackFunction(event), this);
-            this.timers.push(timer);
-        } else {
-            this.game.time.events.add(Phaser.Timer.SECOND * event.Trigger.SecondsToWait, this.gameModel.createShowFeedbackFunction(event), this);
-        }
-    }
-    
     private createEventCountBasedFeedback(event: IFeedbackEvent, eventType: GameEventType): void {
-        var successCounter = 0;
+        var successCounter = event.Trigger.EventNumberOffset || 0;
         var isDisplayed = false;
         
         var listener = (ge: GameModel.IGameEvent) => {

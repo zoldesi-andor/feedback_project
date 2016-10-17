@@ -4,6 +4,7 @@ var git = require('git-rev');
 
 var stream = require('stream');
 var stringify = require('csv-stringify');
+var archiver = require('archiver');
 
 var router = express.Router();
 
@@ -24,7 +25,7 @@ router.get('/result', function (req, res, next) {
 
     var stringifier = stringify();
 
-    res.attachment('results.csv');
+    res.attachment('results.zip');
     res.contentType('text/csv');
 
     var headers = [
@@ -67,9 +68,15 @@ router.get('/result', function (req, res, next) {
         callback();
     };
 
-    query
-        .stream()
-        .pipe(transform).pipe(stringifier).pipe(res);
+    var zip = archiver.create('zip');
+    zip.pipe(res);
+
+    zip.append(
+        query
+            .stream()
+            .pipe(transform).pipe(stringifier),
+        {name: 'results.csv'}
+    ).finalize();
 });
 
 router.post('/game/info', function (req, res) {

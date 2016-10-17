@@ -12,8 +12,8 @@ class QuestionnaireViewModel {
 	public gender: KnockoutObservable<string>;
 	public country: KnockoutObservable<string>;
 
-	public isPlayingOften: KnockoutObservable<boolean>;
-	public isGoodAtGames: KnockoutObservable<boolean>;
+	public isPlayingOften: KnockoutObservable<number>;
+	public isGoodAtGames: KnockoutObservable<number>;
 
 	public hasPlayedBefore: KnockoutObservable<boolean>;
 
@@ -30,8 +30,8 @@ class QuestionnaireViewModel {
 		this.age = ko.observable<number>(gameInfo.Age);
 		this.gender = ko.observable<string>(gameInfo.Gender);
 		this.country = ko.observable<string>(gameInfo.Country);
-		this.isPlayingOften = ko.observable<boolean>(gameInfo.IsPlayingOften);
-		this.isGoodAtGames = ko.observable<boolean>(gameInfo.IsGoodAtGames);
+		this.isPlayingOften = ko.observable<number>(gameInfo.IsPlayingOften);
+		this.isGoodAtGames = ko.observable<number>(gameInfo.IsGoodAtGames);
 		this.hasPlayedBefore = ko.observable<boolean>(gameInfo.HasPlayedBefore);
 
 		this.countries = ko.observableArray<any>(Countries);

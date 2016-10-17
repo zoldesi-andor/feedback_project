@@ -18,8 +18,8 @@ interface GameInfo {
     Country: string;
     IsTouchScreen: boolean;
     NickName: string;
-    IsPlayingOften: boolean;
-    IsGoodAtGames: boolean;
+    IsPlayingOften: number;
+    IsGoodAtGames: number;
 
     Score: number;
 }

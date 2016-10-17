@@ -5,18 +5,40 @@ var config: Model.IExperiment = {
     ExperimentName: "Here Comes The Experiment Name",
     FeedbackOptions: [
         {
-            Name: "No feedback",
+            Name: "Control 1 (Target Change)",
+            FeedbackEvents: [
+                {
+                    Trigger: {
+                        TriggerType: FeedbackTriggerType.Begin
+                    },
+                    Text: "Are you ready?"
+                },
+                {
+                    Trigger: {
+                        TriggerType: FeedbackTriggerType.ProgressCountBased,
+                        NumberOfEvents: 2
+                    },
+                    Text: "$targetCount targets completed"
+                },
+                {
+                    Trigger: {
+                        TriggerType: FeedbackTriggerType.ProgressCountBased,
+                        NumberOfEvents: 5,
+                        IsReoccurring: true
+                    },
+                    Text: "Score: $score"
+                }
+            ]
+        },
+        {
+            Name: "Control 2 (Score)",
             FeedbackEvents: [
                 {
                     Trigger: { TriggerType: FeedbackTriggerType.Begin },
                     Text: "Are you ready?"
                 },
                 {
-                    Trigger: { TriggerType: FeedbackTriggerType.ProgressCountBased, NumberOfEvents: 1 },
-                    Text: "Score: $score"
-                },
-                {
-                    Trigger: { TriggerType: FeedbackTriggerType.ProgressCountBased, NumberOfEvents: 3, IsReoccurring: true },
+                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, NumberOfEvents: 30, IsReoccurring: true },
                     Text: "Score: $score"
                 }
             ]
@@ -29,19 +51,43 @@ var config: Model.IExperiment = {
                     Text: "Are you ready?"
                 },
                 {
-                    Trigger: { TriggerType: FeedbackTriggerType.ProgressCountBased, NumberOfEvents: 1 },
-                    Text: "Score: $score",
-                    ImageUrl: "images/feedback/well_done.png"
+                    Trigger: { TriggerType: FeedbackTriggerType.ProgressCountBased, NumberOfEvents: 2 },
+                    Text: "$targetCount targets completed\nGood job!",
+                    ImageUrl: "images/feedback/wow-smiley.png"
                 },
                 {
-                    Trigger: { TriggerType: FeedbackTriggerType.ProgressCountBased, NumberOfEvents: 3, IsReoccurring: true },
-                    Text: "Score: $score",
-                    ImageUrl: "images/feedback/well_done.png"
+                    Trigger: {
+                        TriggerType: FeedbackTriggerType.ProgressCountBased,
+                        NumberOfEvents: 15,
+                        EventNumberOffset: 10,
+                        IsReoccurring: true
+                    },
+                    Text: "$targetCount targets completed",
+                    ImageUrl: "images/feedback/good_job.png"
+                },
+                {
+                    Trigger: {
+                        TriggerType: FeedbackTriggerType.ProgressCountBased,
+                        NumberOfEvents: 15,
+                        EventNumberOffset: 5,
+                        IsReoccurring: true
+                    },
+                    Text: "$targetCount targets completed\nWell done!",
+                    ImageUrl: "images/feedback/star_thumbs_up.png"
+                },
+                {
+                    Trigger: {
+                        TriggerType: FeedbackTriggerType.ProgressCountBased,
+                        NumberOfEvents: 15,
+                        IsReoccurring: true
+                    },
+                    Text: "$targetCount targets completed\nYou are great!",
+                    ImageUrl: "images/feedback/wow-smiley.png"
                 },
                 {
                     Trigger: { TriggerType: FeedbackTriggerType.End },
                     Text: "Congratulations!",
-                    ImageUrl: "images/feedback/good_job_green_ribbon.png"
+                    ImageUrl: "images/feedback/praise.png"
                 }
             ]
         },
@@ -51,16 +97,26 @@ var config: Model.IExperiment = {
                 {
                     Trigger: { TriggerType: FeedbackTriggerType.Begin },
                     Text: "Good luck!",
-                    ImageUrl: "images/feedback/clover.png"
+                    ImageUrl: "images/feedback/4-leaf-clover.png"
                 },
                 { 
-                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, NumberOfEvents: 20, IsReoccurring: true},
-                    Text: "You can do it!",
-                    ImageUrl: "images/feedback/fingerscrossed.png"
+                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, NumberOfEvents: 30},
+                    Text: "Score: $score\nYou can do it!",
+                    ImageUrl: "images/feedback/encuragment_2.png"
+                },
+                {
+                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, NumberOfEvents: 60},
+                    Text: "Score: $score\nKeep it up!",
+                    ImageUrl: "images/feedback/cool_face.png"
+                },
+                {
+                    Trigger: { TriggerType: FeedbackTriggerType.TimeBased, NumberOfEvents: 90},
+                    Text: "Score: $score\nAlmost there!",
+                    ImageUrl: "images/feedback/encouragement_3.png"
                 },
                 {
                     Trigger: { TriggerType: FeedbackTriggerType.End },
-                    ImageUrl: "images/feedback/winking_encouragement.jpg"
+                    ImageUrl: "images/feedback/hooray.png"
                 }
             ]
         }

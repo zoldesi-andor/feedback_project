@@ -29,18 +29,20 @@ block main-text
                                             "optionsValue: 'i'")
 
         div
-            h4 Are you playing often video games?
+            h4 How often do you play computer games?
             select.form-control(data-bind="{value: isPlayingOften}")
                 option(value="") Please select
-                option(value=1) Yes
-                option(value=0) No
+                option(value=2) Often
+                option(value=1) Sometimes
+                option(value=0) Never
 
         div
-            h4 Are you good at playing video games?
+            h4 Are you good at playing computer games?
             select.form-control(data-bind="{value: isGoodAtGames}")
                 option(value="") Please select
-                option(value=1) Yes
-                option(value=0) No
+                option(value=2) Very good
+                option(value=1) Ok
+                option(value=0) Not good
 
         div
             h4 Have you played this game before?

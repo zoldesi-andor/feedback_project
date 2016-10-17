@@ -16,6 +16,36 @@ git.long(function (str) {
     gitHash = str;
 });
 
+var headers = [
+    ["gameinfoid", "Game Id"],
+    ["timestamp", "Time Stamp", function (value) {
+        try {
+            return new Date(value).toISOString();
+        } catch(e) {}
+        return value;
+    }],
+    ["githash", "App Version"],
+    ["experimentname", "ExperimentName"],
+    ["feedbackoption", "Feedback Option"],
+    ["trackingtoken", "Tracking Token"],
+    ["hasclickedplayagain", "Has Clicked Play Again"],
+    ["hasplayedbefore", "Has Played Before"],
+    ["age", "Age"],
+    ["gender", "Gender"],
+    ["country", "Country"],
+    ["istouchscreen", "Is Touch Screen"],
+    ["nickname", "Nick Name"],
+    ["isplayingoften", "Is Playing Often"],
+    ["isgoodatgames", "Is Good at Games"],
+    ["score", "Score"],
+    ["sequence", "Event Sequence Number"],
+    ["data", "Extra Data"],
+    ["eventtype", "Event Type"],
+    ["time", "Time"]
+];
+
+var defaultMappingFunction = function(x) { return x; };
+
 /* GET results */
 router.get('/result', function (req, res, next) {
     var query = pool.query('SELECT * ' +
@@ -28,29 +58,6 @@ router.get('/result', function (req, res, next) {
     res.attachment('results.zip');
     res.contentType('text/csv');
 
-    var headers = [
-        ["gameinfoid", "Game Id"],
-        ["timestamp", "Time Stamp"],
-        ["githash", "App Version"],
-        ["experimentname", "ExperimentName"],
-        ["feedbackoption", "Feedback Option"],
-        ["trackingtoken", "Tracking Token"],
-        ["hasclickedplayagain", "Has Clicked Play Again"],
-        ["hasplayedbefore", "Has Played Before"],
-        ["age", "Age"],
-        ["gender", "Gender"],
-        ["country", "Country"],
-        ["istouchscreen", "Is Touch Screen"],
-        ["nickname", "Nick Name"],
-        ["isplayingoften", "Is Playing Often"],
-        ["isgoodatgames", "Is Good at Games"],
-        ["score", "Score"],
-        ["sequence", "Event Sequence Number"],
-        ["data", "Extra Data"],
-        ["eventtype", "Event Type"],
-        ["time", "Time"]
-    ];
-
     var firstLine = true;
     var transform = new stream.Transform({objectMode: true});
     transform._transform = function (chunk, encoding, callback) {
@@ -62,7 +69,8 @@ router.get('/result', function (req, res, next) {
         }
 
         transform.push(headers.map(function (item) {
-            return chunk[item[0]];
+            var mappingFunction = item[2] || defaultMappingFunction;
+            return mappingFunction(chunk[item[0]]);
         }));
 
         callback();

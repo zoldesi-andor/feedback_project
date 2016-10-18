@@ -14,9 +14,6 @@ class StartPopup {
         this.game = game;
         this.closeHandler = onClose;
 
-        var height = Config.maxHeight * 0.5;
-        var width = Config.maxWidth * 0.8;
-
         this.robot = this.game.add.sprite(
             Config.maxWidth * 0.7 + 120, Config.maxHeight * 0.7 + 115,
             CommonResources.ROBOT,

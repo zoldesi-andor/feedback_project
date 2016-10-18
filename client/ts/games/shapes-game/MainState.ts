@@ -104,12 +104,6 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
 
     /** Generates part of the game result. */
     public extend(result: GameInfo): GameInfo {
-        /*result.GameInfo = {
-            ExperimentName: ExperimentConfig.ExperimentName,
-            FeedbackOption: this.feedbackPlayer.getCurrentFeedbackOption(),
-            Score: this.getScore()
-        };*/
-
         return result;
     }
 
@@ -335,6 +329,7 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
         this.feedbackPlayer.start();
         this.menuBar.show();
         this.state = State.Running;
+        (<any>this.game.physics.arcade).isPaused = false;
 
         this.remainingTime = Config.gameDuration;
         this.gameTimer = this.game.time.events.loop(
@@ -349,15 +344,26 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
         this.addChangeListener((e: IGameEvent) => {
             if(e.EventType === GameEventType.TimerTick && this.remainingTime <= 0) {
                 this.stop();
-                new GameOverPopUp(this.game, this, () => this.reset(), this.feedbackPlayer.getEndFeedback());
+                new GameOverPopUp(
+                    this.game,
+                    this,
+                    () => this.reset(),
+                    () => this.refillQuestionnaire(),
+                    this.feedbackPlayer.getEndFeedback());
             }
         });
+    }
+
+    private refillQuestionnaire(): void {
+        DataAccess.clearGameInfo();
+        NavigationManager.QuestionnairePage.go();
     }
 
     private stop(): void {
         this.warpInArea.stop();
         this.feedbackPlayer.stop();
         this.state = State.Ended;
+        (<any>this.game.physics.arcade).isPaused = true;
 
         this.game.time.events.remove(this.gameTimer);
 

@@ -22,6 +22,10 @@ export default class DataAccess {
         return JSON.parse(resultString);
     }
 
+    public static clearGameInfo(): void {
+        sessionStorage.removeItem(DataAccess.Key);
+    }
+
     /**
      * Sends the game info to the server.
      * @param gameInfo

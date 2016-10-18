@@ -27,6 +27,10 @@ var config: Model.IExperiment = {
                         IsReoccurring: true
                     },
                     Text: "Score: $score"
+                },
+                {
+                    Trigger: { TriggerType: FeedbackTriggerType.End },
+                    Text: "Game Over!\nscore: $score"
                 }
             ]
         },
@@ -40,6 +44,10 @@ var config: Model.IExperiment = {
                 {
                     Trigger: { TriggerType: FeedbackTriggerType.TimeBased, NumberOfEvents: 30, IsReoccurring: true },
                     Text: "Score: $score"
+                },
+                {
+                    Trigger: { TriggerType: FeedbackTriggerType.End },
+                    Text: "Game Over!\nscore: $score"
                 }
             ]
         },
@@ -86,7 +94,7 @@ var config: Model.IExperiment = {
                 },
                 {
                     Trigger: { TriggerType: FeedbackTriggerType.End },
-                    Text: "Congratulations!",
+                    Text: "Congratulations!\nscore: $score",
                     ImageUrl: "images/feedback/praise.png"
                 }
             ]
@@ -116,6 +124,7 @@ var config: Model.IExperiment = {
                 },
                 {
                     Trigger: { TriggerType: FeedbackTriggerType.End },
+                    Text: "Game Over!\nscore: $score",
                     ImageUrl: "images/feedback/hooray.png"
                 }
             ]

@@ -6,7 +6,7 @@ export default class DataAccess {
     private static Key = "Result-Store-Key";
 
     /**
-     * Stores the game info in the local storage
+     * Stores the game info in the session storage
      * @param result
      */
     public static storeGameInfo(result: GameInfo): void {
@@ -14,7 +14,7 @@ export default class DataAccess {
     }
 
     /**
-     * Loads the game info from the local storage
+     * Loads the game info from the session storage
      * @returns {Result}
      */
     public static loadGameInfo(): GameInfo {
@@ -22,6 +22,9 @@ export default class DataAccess {
         return JSON.parse(resultString);
     }
 
+    /**
+     * Clears the game info from the session storage
+     */
     public static clearGameInfo(): void {
         sessionStorage.removeItem(DataAccess.Key);
     }

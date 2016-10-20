@@ -87,6 +87,17 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
         this.warpInArea = new WarpInArea(this, this.game);
 
         new StartPopUp(this.game, () => this.start(), this.feedbackPlayer.getStartFeedback());
+        this.addChangeListener((e: IGameEvent) => {
+            if(e.EventType === GameEventType.TimerTick && this.remainingTime <= 0) {
+                this.stop();
+                new GameOverPopUp(
+                    this.game,
+                    this,
+                    () => this.reset(),
+                    () => this.refillQuestionnaire(),
+                    this.feedbackPlayer.getEndFeedback());
+            }
+        });
     }
 
     /** Phaser update callback */
@@ -100,11 +111,6 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
                 this.setRandomTarget();
             }
         }
-    }
-
-    /** Generates part of the game result. */
-    public extend(result: GameInfo): GameInfo {
-        return result;
     }
 
     /** Adds a listener which is called on model changes. */
@@ -141,6 +147,10 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
         this.shapesGroup.add(s);
         s.inputEnabled = true;
         s.events.onInputDown.add(() => {
+            if(this.state != GameState.Running) {
+                return;
+            }
+
             if (s.shapeType === this.targetShapeType) {
                 this.score += 1;
 
@@ -340,18 +350,6 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
                     this.raiseChangedEvent(GameEventType.TimerTick);
                 }
             });
-
-        this.addChangeListener((e: IGameEvent) => {
-            if(e.EventType === GameEventType.TimerTick && this.remainingTime <= 0) {
-                this.stop();
-                new GameOverPopUp(
-                    this.game,
-                    this,
-                    () => this.reset(),
-                    () => this.refillQuestionnaire(),
-                    this.feedbackPlayer.getEndFeedback());
-            }
-        });
     }
 
     private refillQuestionnaire(): void {
@@ -367,9 +365,8 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
 
         this.game.time.events.remove(this.gameTimer);
 
-        this.extend(result);
         DataAccess.sendGameEvent(
-            1,
+            result.Id,
             {
                 EventType: GameEventType.GameOver,
                 Score: this.getScore(),
@@ -384,7 +381,13 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
     private reset(): void {
         this.shapesGroup.removeAll();
         this.targetShapeType = this.getRandomTargetShapeType();
+
         this.score = 0;
+        this.tickCounter = 0;
+        this.successCounter = 0;
+        this.missCounter = 0;
+        this.targetsCompletedCounter = 0;
+
         this.gameEvents = [];
 
         this.menuBar.reset();

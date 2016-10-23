@@ -1,2 +1,12 @@
+html {height: 100%;}
+body {height: 100%;}
+
+.main.container {height:100%;}
+.index.container {
+    height:100%;
+    margin-top: 50px;
+    background: url("../images/robot_with_no_background.png") no-repeat right;
+}
+
 .space-above { margin-top: 30px; }
 .dropdown-menu { max-height: 300px; overflow-y: scroll; }

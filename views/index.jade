@@ -4,13 +4,16 @@ block main-text
   .page-header 
     h1 Experimental Games
   p This is a website with free games made by the <a target='_blanck' href='https://vrcgroup.wordpress.com/'>Virtual Research Collaboration</a> on Gender and Family in the Labor Market. The games are free. We collect anonymous, simple data for our research on performance in different games. We thank you very much for helping our project, and hope you enjoy the games!
-  .media(data-bind="foreach: games")
-    .media-left
-      a(data-bind="click: $parent.selectGame")
-        img.media-object(style="width: 64px; height: 64px", data-bind="attr: { src: imageUrl }")
-    .media-body
-      h4(data-bind="text: title")
-      div(data-bind="text: description")
+  .index.container
+    .row
+      .col-md-8
+        .media(data-bind="foreach: games")
+          .media-left
+            a(data-bind="click: $parent.selectGame")
+              img.media-object(style="width: 64px; height: 64px", data-bind="attr: { src: imageUrl }")
+          .media-body
+            h4(data-bind="text: title")
+            div(data-bind="text: description")
 
 block scripts
   script(data-main='ts/index/IndexPage.js', src='lib/requirejs/require.js')

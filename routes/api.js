@@ -41,7 +41,9 @@ var headers = [
     ["sequence", "Event Sequence Number"],
     ["data", "Extra Data"],
     ["eventtype", "Event Type"],
-    ["time", "Time"]
+    ["time", "Time"],
+    ["urlslug", "Url Slug"],
+    ["ip", "IP Address"]
 ];
 
 var defaultMappingFunction = function(x) { return x; };
@@ -106,7 +108,9 @@ router.post('/game/info', function (req, res) {
         isplayingoften: data.IsPlayingOften,
         isgoodatgames: data.IsGoodAtGames,
         score: data.score,
-        githash: gitHash
+        urlslug: data.UrlSlug,
+        githash: gitHash,
+        ip: req.ip
     }, function (err, result) {
         console.log(result);
 

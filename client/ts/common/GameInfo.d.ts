@@ -9,6 +9,7 @@ interface GameInfo {
     FeedbackOptionName: string;
     FeedbackOption: IFeedbackOption;
 
+    UrlSlug: string;
     TrackingToken: string;
 
     HasClickedPlayAgain: boolean;

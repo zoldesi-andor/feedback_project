@@ -12,7 +12,7 @@ class Page {
 			}
 		}
 		
-		window.location.href = url;
+		window.location.href = url + window.location.hash;
 	}
 }
 

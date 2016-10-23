@@ -50,6 +50,7 @@ class QuestionnaireViewModel {
 			TimeStampExtender,
 			IsTouchExtender,
 			TrackingTokenExtender,
+			UrlSlugExtender,
 			(result: GameInfo) => {
 
 				result.NickName = this.nickName();
@@ -94,6 +95,11 @@ let TrackingTokenExtender = (result: GameInfo) => {
 	var trackingToken = localStorage.getItem("tracking-token") || UUIDGenerator();
 	localStorage.setItem("tracking-token", trackingToken);
 	result.TrackingToken = trackingToken;
+	return result;
+};
+
+let UrlSlugExtender = (result: GameInfo) => {
+	result.UrlSlug = window.location.hash;
 	return result;
 };
 

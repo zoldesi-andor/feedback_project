@@ -6,27 +6,27 @@ export default class DataAccess {
     private static Key = "Result-Store-Key";
 
     /**
-     * Stores the game info in the session storage
+     * Stores the game info in the local storage
      * @param result
      */
     public static storeGameInfo(result: GameInfo): void {
-        sessionStorage.setItem(DataAccess.Key, JSON.stringify(result));
+        localStorage.setItem(DataAccess.Key, JSON.stringify(result));
     }
 
     /**
-     * Loads the game info from the session storage
+     * Loads the game info from the local storage
      * @returns {Result}
      */
     public static loadGameInfo(): GameInfo {
-        var resultString = sessionStorage.getItem(DataAccess.Key) || '{}';
+        var resultString = localStorage.getItem(DataAccess.Key) || '{}';
         return JSON.parse(resultString);
     }
 
     /**
-     * Clears the game info from the session storage
+     * Clears the game info from the local storage
      */
     public static clearGameInfo(): void {
-        sessionStorage.removeItem(DataAccess.Key);
+        localStorage.removeItem(DataAccess.Key);
     }
 
     /**

@@ -1,4 +1,5 @@
 import NavigationManager = require('../common/NavigationManager');
+
 import DataAccess from "../common/DataAccess";
 import Countries from "./countries";
 import UUIDGenerator from "../common/UUIDGenerator";
@@ -82,7 +83,8 @@ class QuestionnaireViewModel {
 }
 
 let TimeStampExtender = (result: GameInfo) => {
-		result.TimeStamp = new Date().getTime();
+
+		result.TimeStamp = moment().format();
 		return result;
 };
 

@@ -18,12 +18,7 @@ git.long(function (str) {
 
 var headers = [
     ["gameinfoid", "Game Id"],
-    ["timestamp", "Time Stamp", function (value) {
-        try {
-            return new Date(value).toISOString();
-        } catch(e) {}
-        return value;
-    }],
+    ["timestamp", "Game Start Time"],
     ["githash", "App Version"],
     ["experimentname", "ExperimentName"],
     ["feedbackoption", "Feedback Option"],
@@ -41,7 +36,12 @@ var headers = [
     ["sequence", "Event Sequence Number"],
     ["data", "Extra Data"],
     ["eventtype", "Event Type"],
-    ["time", "Time"],
+    ["time", "Game Event Time", function (value) {
+        try {
+            return new Date(value).toISOString();
+        } catch(e) {}
+        return value;
+    }],
     ["urlslug", "Url Slug"],
     ["ip", "IP Address"]
 ];
@@ -132,7 +132,8 @@ router.post('/game/:id/event', function (req, res) {
         sequence: data.Sequence,
         data: JSON.stringify(data.Data),
         eventtype: data.EventType,
-        score: data.Score
+        score: data.Score,
+        time: Date.now()
     }, function (err, result) {
 
         if(!err) {

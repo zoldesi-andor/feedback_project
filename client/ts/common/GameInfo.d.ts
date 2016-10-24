@@ -3,7 +3,7 @@ import {IFeedbackOption} from "../games/feedback/FeedbackModel";
 
 interface GameInfo {
     Id: number;
-    TimeStamp: number;
+    TimeStamp: string;
 
     ExperimentName: string;
     FeedbackOptionName: string;

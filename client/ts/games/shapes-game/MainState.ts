@@ -330,6 +330,8 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
 
     private start(): void {
 
+        result.TimeStamp = moment().format();
+        result.UrlSlug = window.location.hash;
         result.ExperimentName = ExperimentConfig.ExperimentName;
         result.FeedbackOption = this.feedbackPlayer.getCurrentFeedbackOption();
         result.FeedbackOptionName = result.FeedbackOption.Name;

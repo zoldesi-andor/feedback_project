@@ -48,10 +48,8 @@ class QuestionnaireViewModel {
         );
 
 		this.extenders = [
-			TimeStampExtender,
 			IsTouchExtender,
 			TrackingTokenExtender,
-			UrlSlugExtender,
 			(result: GameInfo) => {
 
 				result.NickName = this.nickName();
@@ -82,12 +80,6 @@ class QuestionnaireViewModel {
 	}
 }
 
-let TimeStampExtender = (result: GameInfo) => {
-
-		result.TimeStamp = moment().format();
-		return result;
-};
-
 let IsTouchExtender = (result: GameInfo) => {
 	result.IsTouchScreen = 'ontouchstart' in window;
 	return result;
@@ -97,11 +89,6 @@ let TrackingTokenExtender = (result: GameInfo) => {
 	var trackingToken = localStorage.getItem("tracking-token") || UUIDGenerator();
 	localStorage.setItem("tracking-token", trackingToken);
 	result.TrackingToken = trackingToken;
-	return result;
-};
-
-let UrlSlugExtender = (result: GameInfo) => {
-	result.UrlSlug = window.location.hash;
 	return result;
 };
 

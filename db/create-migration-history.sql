@@ -1,7 +1,6 @@
-CREATE TABLE MigrationHistory (id LONG, migration VARCHAR(128));
-CREATE TABLE heroku_83cf4143360f78c.MigrationHistory
+CREATE TABLE migrationhistory
 (
-    id LONG PRIMARY KEY AUTO_INCREMENT,
-    migration VARCHAR(256) NOT NULL
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    migration VARCHAR(128) NOT NULL
 );
-CREATE UNIQUE INDEX MigrationHistory_migration_uindex ON heroku_83cf4143360f78c.MigrationHistory (migration)
+CREATE UNIQUE INDEX migrationhistory_migration_uindex ON migrationhistory (migration)

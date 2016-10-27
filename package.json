@@ -20,7 +20,7 @@
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-copy": "^0.8.2",
     "grunt-contrib-requirejs": "^0.4.4",
-    "grunt-ts": "latest",
+    "grunt-ts": "~5.5.1",
     "jade": "~1.11.0",
     "morgan": "~1.6.1",
     "mysql": "^2.10.2",

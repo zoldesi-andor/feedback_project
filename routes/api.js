@@ -42,6 +42,7 @@ var headers = [
         } catch(e) {}
         return value;
     }],
+    ["gametimer", "Game Timer"],
     ["urlslug", "Url Slug"],
     ["ip", "IP Address"]
 ];
@@ -133,7 +134,8 @@ router.post('/game/:id/event', function (req, res) {
         data: JSON.stringify(data.Data),
         eventtype: data.EventType,
         score: data.Score,
-        time: Date.now()
+        time: Date.now(),
+        gametimer: data.GameTimer
     }, function (err, result) {
 
         if(!err) {

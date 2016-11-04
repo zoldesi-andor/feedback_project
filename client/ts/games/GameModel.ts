@@ -8,6 +8,7 @@ export interface IGameEvent {
     Data?:any;
     EventType:GameEventType;
     Time:number;
+    GameTimer: number;
     Score:number;
     SuccessCount: number;
     MissCount: number;

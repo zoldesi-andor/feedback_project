@@ -26,7 +26,7 @@ var config: Model.IExperiment = {
                         NumberOfEvents: 5,
                         IsReoccurring: true
                     },
-                    Text: "Score: $score"
+                    Text: "$targetCount targets completed"
                 },
                 {
                     Trigger: { TriggerType: FeedbackTriggerType.End },

@@ -202,7 +202,8 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
             Time: new Date().getTime(),
             Score: this.getScore(),
             SuccessCount: this.successCounter,
-            MissCount: this.missCounter
+            MissCount: this.missCounter,
+            GameTimer: this.remainingTime
         };
 
         if(event.EventType !== GameEventType.TimerTick) {
@@ -375,7 +376,8 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
                 Sequence: this.gameEventSequence ++,
                 Time: new Date().getTime(),
                 SuccessCount: this.successCounter,
-                MissCount: this.missCounter
+                MissCount: this.missCounter,
+                GameTimer: this.remainingTime
             }
         );
     }

@@ -3,14 +3,13 @@ extends text-content
 block main-text
   .page-header 
     h1 Experimental Games
-  p This is a website with free games made by the <a target='_blanck' href='https://vrcgroup.wordpress.com/'>Virtual Research Collaboration</a> on Gender and Family in the Labor Market. The games are free. We collect anonymous, simple data for our research on performance in different games. We thank you very much for helping our project, and hope you enjoy the games!
+  p This is a website with free games made by the <a target='_blanck' href='https://vrcgroup.wordpress.com/'>Virtual Research Collaboration</a>. The games are free. We collect anonymous, simple data for our research on performance in different games. We thank you very much for helping our project, and hope you enjoy the games!
   .index.container
     .row
-      .col-xs-10.text-bubble
-        .media(data-bind="foreach: games")
+      .col-xs-10.text-bubble(data-bind="foreach: games, click: selectGame", style="cursor: pointer")
+        .media
           .media-left
-            a(data-bind="click: $parent.selectGame")
-              img.media-object(style="width: 64px; height: 64px", data-bind="attr: { src: imageUrl }")
+            img.media-object(style="width: 64px; height: 64px", data-bind="attr: { src: imageUrl }")
           .media-body
             h4(data-bind="text: title")
             div(data-bind="text: description")

@@ -224,6 +224,10 @@ class MainState extends Phaser.State implements Model.IShapeGameModel {
     public createShowFeedbackFunction(event:IFeedbackEvent):()=>void {
         return () => {
 
+            if(this.remainingTime <= 0) {
+                return;
+            }
+
             var background = this.game.add.sprite(
                 Config.maxWidth * 0.9, Config.height + 20,
                 CommonResources.TEXT_BUBBLE_DOWN);
